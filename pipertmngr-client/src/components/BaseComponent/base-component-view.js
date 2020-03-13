@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import clsx from "clsx";
 import {
   makeStyles,
@@ -43,37 +43,10 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const exampleDiagramTest = [
-  {
-    routineName: "Listen2Stream",
-    params: {
-      name: "Listen2Ynet",
-      url: "www.ynet.co.il",
-      fps: 30,
-      queue_out: "queue_1"
-    }
-  },
-  {
-    routineName: "DoStuff",
-    params: {
-      name: "RunMyProcess",
-      queue_in: "queue_1",
-      queue_out: "queue_2"
-    }
-  },
-  {
-    routineName: "Send2Redis",
-    params: {
-      name: "SendMyStuff2Redis",
-      queue_in: "queue_2",
-      redis_key: "REDIS_1"
-    }
-  }
-];
-
 export default function BaseComponentView(props) {
   const classes = useStyles();
   const theme = useTheme();
+  let prevZoomLevel = 100;
   const routineList = props.componentData.routines
     ? props.componentData.routines
     : [];
@@ -82,6 +55,7 @@ export default function BaseComponentView(props) {
   var engine = new SRD.DiagramEngine();
   engine.installDefaultFactories();
   engine.setCanvas(document.getElementById("cardCanvas"));
+  engine.setSmartRoutingStatus(true);
 
   // 2) setup the diagram model
   var model = new SRD.DiagramModel();
@@ -137,6 +111,19 @@ export default function BaseComponentView(props) {
   engine.setDiagramModel(model);
   model.setLocked(true);
 
+  model.addListener({
+    zoomUpdated: function(e) {
+      let currentZoomLevel = e.zoom;
+      let roundedCurrentZoom = Math.ceil(currentZoomLevel / 10) * 10;
+
+      if (roundedCurrentZoom != 100 && currentZoomLevel === prevZoomLevel) {
+        props.forceAnUpdate();
+      }
+
+      prevZoomLevel = currentZoomLevel;
+    }
+  });
+
   window.addEventListener("resize", () => {
     if (props.componentData.routines) {
       engine.zoomToFit();
@@ -170,7 +157,7 @@ export default function BaseComponentView(props) {
             <div className={classes.emptyComponent}>
               <div>
                 <Typography className={classes.thinText} variant="h5">
-                  THIS COMPONENT IS LONELY &#128579;
+                  IT'S LONELY IN HERE... &#128579;
                 </Typography>
               </div>
               <div>

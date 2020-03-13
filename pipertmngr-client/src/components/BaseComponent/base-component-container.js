@@ -10,6 +10,10 @@ export class BaseComponentContainer extends Component {
     this.props.deleteComponent(this.props.componentData);
   };
 
+  forceAnUpdate = () => {
+    this.forceUpdate();
+  };
+
   render() {
     return (
       <BaseComponentView
@@ -19,6 +23,7 @@ export class BaseComponentContainer extends Component {
         componentData={this.props.componentData}
         changeSelected={this.props.changeSelected}
         deleteComponent={this.deleteComponent}
+        forceAnUpdate={this.forceAnUpdate}
       />
     );
   }
