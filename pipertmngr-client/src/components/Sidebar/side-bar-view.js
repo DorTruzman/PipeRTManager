@@ -74,7 +74,7 @@ export default function SideBarView(props) {
         let listItemProps = {
           disabled: disableRoutine,
           onClick: !disableRoutine
-            ? () => props.openRoutineForm(routineData)
+            ? () => props.toggleRoutineForm(routineData, true)
             : undefined
         };
 
@@ -173,12 +173,12 @@ export default function SideBarView(props) {
         {sideList(props.routes, props.routinesList)}
       </Drawer>
 
-      {props.showRoutineForm && (
+      {props.displayRoutineForm && (
         <RoutineFormContainer
           selectedComponent={props.selectedComponent}
           routineData={props.routineData}
           createRoutine={props.createRoutine}
-          closeRoutineForm={props.closeRoutineForm}
+          closeRoutineForm={() => props.toggleRoutineForm(null, false)}
         />
       )}
 
