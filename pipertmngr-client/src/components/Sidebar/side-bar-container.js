@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import SideBarView from "./side-bar-view";
+import ServerConfig from "../../config/server";
 
 export class SideBarContainer extends Component {
   constructor(props) {
@@ -36,7 +37,7 @@ export class SideBarContainer extends Component {
   };
 
   getAllRoutines = () => {
-    fetch("http://localhost:3000/routines")
+    fetch(ServerConfig.SERVER_URL + ServerConfig.ROUTE_GET_ROUTINES)
       .then(res => res.json())
       .then(res => {
         if (res.routines) {
@@ -61,6 +62,7 @@ export class SideBarContainer extends Component {
         routineData={this.state.routineData}
         createRoutine={this.props.createRoutine}
         isComponentSelected={this.state.isComponentSelected}
+        selectedComponent={this.props.selectedComponent}
       />
     );
   }

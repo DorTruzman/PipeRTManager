@@ -1,6 +1,14 @@
 import React from "react";
 import clsx from "clsx";
-import { makeStyles, Fab, Typography, Grid, Link } from "@material-ui/core";
+import {
+  makeStyles,
+  Fab,
+  Typography,
+  Grid,
+  Link,
+  Snackbar
+} from "@material-ui/core";
+import MuiAlert from "@material-ui/lab/Alert";
 import { Add, Done } from "@material-ui/icons";
 import ComponentFormContainer from "../ComponentForm";
 import PipelineContainer from "../Pipeline";
@@ -17,7 +25,7 @@ export default function WorkAreaView(props) {
       marginRight: 50
     },
     contentShift: {
-      marginLeft: 220,
+      marginLeft: 300,
       transition: theme.transitions.create(["width", "margin"], {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.enteringScreen
@@ -61,6 +69,15 @@ export default function WorkAreaView(props) {
         [classes.contentShift]: props.isSideBarOpen
       })}
     >
+      <Snackbar
+        open={props.showSuccessMessage}
+        autoHideDuration={6000}
+        onClose={props.toggleSuccessMessage}
+      >
+        <MuiAlert variant="filled" severity="success">
+          <b>PIPELINE IS SAVED SUCCESSFULLY! 😊</b>
+        </MuiAlert>
+      </Snackbar>
       {props.components.length === 0 ? (
         <div>
           <Grid
@@ -111,6 +128,7 @@ export default function WorkAreaView(props) {
         COMPONENT
       </Fab>
       <Fab
+        onClick={props.savePipeline}
         className={classes.saveFab}
         size="large"
         color="inherit"

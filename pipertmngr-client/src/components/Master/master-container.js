@@ -1,15 +1,15 @@
 import React, { Component, useRef } from "react";
 import { BrowserRouter, Route, Switch, Redirect, Link } from "react-router-dom";
+import TopBarContainer from "../TopBar";
 import SideBarContainer from "../Sidebar";
 import {
   createMuiTheme,
   ThemeProvider,
   StylesProvider
 } from "@material-ui/core/styles";
-import TopBarContainer from "../TopBar";
-import { CssBaseline, Container } from "@material-ui/core";
-import WorkAreaContainer from "../WorkArea";
+import { CssBaseline } from "@material-ui/core";
 import RoutesConfig from "../../config/routes";
+import ComponentUtils from "../../utils/ComponentUtils";
 
 const theme = createMuiTheme({
   palette: {
@@ -37,22 +37,83 @@ export class MasterContainer extends Component {
     super(props);
 
     this.state = {
+      components: [],
+      showComponentForm: false,
+      selectedComponent: null,
       isSideBarOpen: false,
       isComponentSelected: false
     };
-
-    this.WorkAreaRef = React.createRef();
   }
 
-  toggleSideBar = () => {
+  createComponent = name => {
     this.setState({
-      isSideBarOpen: !this.state.isSideBarOpen
+      components: ComponentUtils.createComponent(this.state.components, name)
     });
+
+    this.toggleComponentForm(false);
+  };
+
+  deleteComponent = componentData => {
+    this.setState({
+      components: ComponentUtils.deleteComponent(
+        this.state.components,
+        componentData.name
+      )
+    });
+
+    if (
+      this.state.selectedComponent &&
+      componentData.name === this.state.selectedComponent.name
+    ) {
+      this.changeSelectedComponent(null);
+    }
+  };
+
+  changeSelectedComponent = componentData => {
+    if (componentData && componentData.name) {
+      this.setState({
+        selectedComponent: componentData
+      });
+
+      this.setComponentSelectedState(true);
+    } else {
+      this.setState({
+        selectedComponent: null
+      });
+
+      this.setComponentSelectedState(false);
+    }
   };
 
   setComponentSelectedState = stateToSet => {
     this.setState({
       isComponentSelected: stateToSet
+    });
+  };
+
+  toggleComponentForm = toggleMode => {
+    this.setState({
+      showComponentForm: toggleMode
+    });
+  };
+
+  createRoutine = routineWithParams => {
+    let { components, updatedComponent } = ComponentUtils.createRoutine(
+      this.state.components,
+      this.state.selectedComponent.name,
+      routineWithParams
+    );
+
+    this.setState({
+      components
+    });
+
+    this.changeSelectedComponent(updatedComponent);
+  };
+
+  toggleSideBar = () => {
+    this.setState({
+      isSideBarOpen: !this.state.isSideBarOpen
     });
   };
 
@@ -72,24 +133,22 @@ export class MasterContainer extends Component {
               )}
             />
           );
-        else if (routeKey === "home") {
-          return (
-            <Route
-              path={routeData.path}
-              render={() => (
-                <WorkAreaContainer
-                  ref={this.WorkAreaRef}
-                  isSideBarOpen={this.state.isSideBarOpen}
-                  setComponentSelectedState={this.setComponentSelectedState}
-                />
-              )}
-            />
-          );
-        }
         return (
           <Route
             path={routeData.path}
-            render={() => <TagName isSideBarOpen={this.state.isSideBarOpen} />}
+            render={() => (
+              <TagName
+                changeSelectedComponent={this.changeSelectedComponent}
+                createComponent={this.createComponent}
+                createRoutine={this.createRoutine}
+                toggleComponentForm={this.toggleComponentForm}
+                components={this.state.components}
+                showComponentForm={this.state.showComponentForm}
+                selectedComponent={this.state.selectedComponent}
+                deleteComponent={this.deleteComponent}
+                isSideBarOpen={this.state.isSideBarOpen}
+              />
+            )}
           />
         );
       }.bind(this)
@@ -107,14 +166,12 @@ export class MasterContainer extends Component {
               toggleSideBar={this.toggleSideBar}
             />
             <SideBarContainer
+              components={this.state.components}
+              selectedComponent={this.state.selectedComponent}
               routes={RoutesConfig}
               toggleSideBar={this.toggleSideBar}
               isSideBarOpen={this.state.isSideBarOpen}
-              createRoutine={
-                this.WorkAreaRef &&
-                this.WorkAreaRef.current &&
-                this.WorkAreaRef.current.createRoutine
-              }
+              createRoutine={this.createRoutine}
               isComponentSelected={this.state.isComponentSelected}
             />
             <Switch>{this.createRoutes(RoutesConfig)}</Switch>

@@ -12,13 +12,6 @@ import {
 import { Done, Clear } from "@material-ui/icons";
 
 export default function ComponentFormView(props) {
-  const componentName = useRef();
-  componentName.current = "";
-
-  const setInputState = e => {
-    componentName.current = e.target.value;
-  };
-
   return (
     <Dialog
       open={true}
@@ -32,7 +25,7 @@ export default function ComponentFormView(props) {
         </DialogContentText>
         <TextField
           label="TYPE HERE..."
-          onChange={e => setInputState(e)}
+          onChange={e => props.setInputState(e)}
         ></TextField>
       </DialogContent>
       <DialogActions>
@@ -44,11 +37,7 @@ export default function ComponentFormView(props) {
           <Clear />
           CLOSE
         </Button>
-        <Button
-          color="primary"
-          onClick={() => props.createComponent(componentName.current)}
-          autoFocus
-        >
+        <Button color="primary" onClick={props.createComponent} autoFocus>
           <Done />
           CREATE
         </Button>
