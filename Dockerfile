@@ -1,4 +1,4 @@
-FROM node:10-alpine
+FROM node:alpine3.11
     
 # Create app directory
 WORKDIR /usr/src/app
@@ -8,7 +8,7 @@ WORKDIR /usr/src/app
 # Bundle app source
 COPY . .
 
-EXPOSE 3000
+EXPOSE 8080
 
 WORKDIR /usr/src/app/pipertmngr-client
 
