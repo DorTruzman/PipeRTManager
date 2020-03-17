@@ -7,10 +7,5 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      args:
-        http_proxy:
-        https_proxy:
-        no_proxy:
-        socks_proxy:
     ports:
       - '8080:8080'
