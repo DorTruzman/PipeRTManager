@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React from "react";
+import ReactDOM from "react-dom";
 import clsx from "clsx";
 import {
   makeStyles,
@@ -7,7 +8,6 @@ import {
   Grid,
   CardContent,
   CardHeader,
-  Button,
   Typography
 } from "@material-ui/core";
 import { Delete } from "@material-ui/icons";
@@ -46,92 +46,19 @@ const useStyles = makeStyles(theme => ({
 export default function BaseComponentView(props) {
   const classes = useStyles();
   const theme = useTheme();
-  let prevZoomLevel = 100;
-  const routineList = props.componentData.routines
-    ? props.componentData.routines
-    : [];
-
-  // 1) setup the diagram engine
-  var engine = new SRD.DiagramEngine();
-  engine.installDefaultFactories();
-  engine.setCanvas(document.getElementById("cardCanvas"));
-  engine.setSmartRoutingStatus(true);
-
-  // 2) setup the diagram model
-  var model = new SRD.DiagramModel();
-  let currentX = 0;
-
-  const getNodeByName = (nodes, name) => {
-    let keysArray = Object.keys(nodes);
-    for (let i = 0; i < keysArray.length; i++) {
-      if (nodes[keysArray[i]].name && nodes[keysArray[i]].name === name) {
-        return nodes[keysArray[i]];
-      }
-    }
-
-    return null;
-  };
-
-  routineList.forEach((routine, index) => {
-    let randomColor = "#" + (((1 << 24) * Math.random()) | 0).toString(16);
-    let node = new SRD.DefaultNodeModel(routine.params.name, randomColor);
-    if (routine.params.queue_in) {
-      node.addInPort("In");
-    }
-    if (routine.params.queue_out) {
-      node.addOutPort("Out");
-    }
-    node.x = currentX;
-    currentX += 170;
-    model.addNode(node);
-  });
-
-  let allNodes = model.getNodes();
-
-  for (let i = 0; i < routineList.length - 1; i++) {
-    let currRoutine = routineList[i];
-    let nextRoutine = routineList[i + 1];
-
-    if (
-      currRoutine.params.hasOwnProperty("queue_out") &&
-      nextRoutine.params.hasOwnProperty("queue_in") &&
-      currRoutine.params.queue_out === nextRoutine.params.queue_in
-    ) {
-      // Find the nodes
-      let currNode = getNodeByName(allNodes, currRoutine.params.name);
-      let nextNode = getNodeByName(allNodes, nextRoutine.params.name);
-      let link = currNode.getOutPorts()[0].link(nextNode.getInPorts()[0]);
-      link.setColor("black");
-      link.addLabel(currRoutine.params.queue_out);
-      model.addLink(link);
-    }
-  }
-
-  // 7) load model into engine
-  engine.setDiagramModel(model);
-  model.setLocked(true);
-
-  model.addListener({
-    zoomUpdated: function(e) {
-      let currentZoomLevel = e.zoom;
-      let roundedCurrentZoom = Math.ceil(currentZoomLevel / 10) * 10;
-
-      if (roundedCurrentZoom != 100 && currentZoomLevel === prevZoomLevel) {
-        props.forceAnUpdate();
-      }
-
-      prevZoomLevel = currentZoomLevel;
-    }
-  });
 
   window.addEventListener("resize", () => {
-    if (props.componentData.routines) {
-      engine.zoomToFit();
+    if (
+      props.diagramEngine &&
+      props.componentData &&
+      props.componentData.routines
+    ) {
+      props.resizeHandler(ReactDOM.findDOMNode(props.canvasRef.current));
     }
   });
 
   return (
-    <Grid item className={classes.gridItem} xs={5}>
+    <Grid item className={classes.gridItem} xs={4}>
       <Card
         className={clsx({
           [classes.glow]: props.isSelected
@@ -150,7 +77,6 @@ export default function BaseComponentView(props) {
         />
         <CardContent
           onClick={() => props.changeSelected(props.componentData)}
-          id="cardCanvas"
           className={classes.componentCard}
         >
           {!props.componentData.routines ? (
@@ -165,16 +91,22 @@ export default function BaseComponentView(props) {
                   ADD SOME ROUTINES TO THE MIX!
                 </Typography>
               </div>
+              <div>
+                <Typography variant="subtitle2">(CLICK ME!)</Typography>
+              </div>
             </div>
           ) : (
-            <SRD.DiagramWidget
-              allowLooseLinks={false}
-              allowCanvasTranslation={false}
-              allowCanvasZoom={false}
-              setLocked={true}
-              className={"srd-demo-canvas"}
-              diagramEngine={engine}
-            />
+            props.diagramEngine && (
+              <SRD.DiagramWidget
+                ref={props.canvasRef}
+                allowLooseLinks={false}
+                allowCanvasTranslation={false}
+                allowCanvasZoom={false}
+                setLocked={true}
+                className={"srd-demo-canvas"}
+                diagramEngine={props.diagramEngine}
+              />
+            )
           )}
         </CardContent>
       </Card>

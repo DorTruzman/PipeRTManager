@@ -10,11 +10,11 @@ router.get("/routines", function(req, res, next) {
   const routines = {
     routines: [
       {
-        name: "Listen2Redis",
+        name: "MessageFromRedis",
         type: "HAS_TO_BE_FIRST"
       },
       {
-        name: "Listen2Stream",
+        name: "ListenToStream",
         type: "HAS_TO_BE_FIRST"
       },
       {
@@ -24,7 +24,7 @@ router.get("/routines", function(req, res, next) {
         name: "DoMoreStuff"
       },
       {
-        name: "Send2Redis",
+        name: "MessageToRedis",
         type: "HAS_TO_BE_LAST"
       }
     ]
@@ -33,32 +33,39 @@ router.get("/routines", function(req, res, next) {
   res.json(routines);
 });
 
+router.post("/pipeline", function(req, res, next) {
+  res.json(req.body);
+});
+
 router.get("/routineParams/:routineName", function(req, res, next) {
   const routines = {
-    Listen2Redis: {
+    MessageFromRedis: {
       name: "String",
-      queue_out: "QueueOut"
+      redis_read_key: "RedisIn",
+      out_queue: "QueueOut"
     },
     DoStuff: {
       name: "String",
-      queue_in: "QueueIn",
-      queue_out: "QueueOut"
+      message_queue: "QueueIn",
+      out_queue: "QueueOut"
     },
     DoMoreStuff: {
       name: "String",
-      queue_in: "QueueIn",
-      queue_out: "QueueOut"
+      message_queue: "QueueIn",
+      out_queue: "QueueOut"
     },
-    Listen2Stream: {
+    ListenToStream: {
       name: "String",
       url: "String",
       fps: "Integer",
-      queue_out: "QueueOut"
+      out_queue: "QueueOut"
     },
-    Send2Redis: {
+    MessageToRedis: {
       name: "String",
-      queue_in: "QueueIn",
-      redis_key: "RedisKey"
+      url: "String",
+      max_stream_length: "Integer",
+      message_queue: "QueueIn",
+      redis_send_key: "RedisOut"
     }
   };
 

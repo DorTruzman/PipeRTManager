@@ -1,5 +1,6 @@
 import React from "react";
 import clsx from "clsx";
+import { NavLink } from "react-router-dom";
 import {
   List,
   ListItem,
@@ -14,8 +15,9 @@ import {
 } from "@material-ui/core";
 import { ChevronLeftSharp, InputSharp, CodeSharp } from "@material-ui/icons";
 import MuiAlert from "@material-ui/lab/Alert";
-import { NavLink } from "react-router-dom";
 import RoutineFormContainer from "../RoutineForm";
+import ComponentUtils from "../../utils/ComponentUtils";
+import ServerConfig from "../../config/server";
 
 export default function SideBarView(props) {
   const sideList = (routes = {}, routinesList) => {
@@ -43,11 +45,43 @@ export default function SideBarView(props) {
     let routinesJSX = null;
 
     if (routinesList) {
+      let shouldDisableAll = ComponentUtils.checkForRoutineType(
+        props.selectedComponent,
+        ServerConfig.RoutineTypes.HasToBeLast
+      );
+
       routinesJSX = routinesList.map(function(routineData) {
+        let disableRoutine = false;
+
+        if (
+          !props.selectedComponent ||
+          shouldDisableAll ||
+          (routineData.type !== ServerConfig.RoutineTypes.HasToBeFirst &&
+            routineData.type !== ServerConfig.RoutineTypes.HasToBeLast &&
+            !ComponentUtils.checkForRoutineType(
+              props.selectedComponent,
+              ServerConfig.RoutineTypes.HasToBeFirst
+            )) ||
+          (routineData.type === ServerConfig.RoutineTypes.HasToBeFirst &&
+            ComponentUtils.checkForRoutineType(
+              props.selectedComponent,
+              ServerConfig.RoutineTypes.HasToBeFirst
+            ))
+        ) {
+          disableRoutine = true;
+        }
+
+        let listItemProps = {
+          disabled: disableRoutine,
+          onClick: !disableRoutine
+            ? () => props.toggleRoutineForm(routineData, true)
+            : undefined
+        };
+
         return (
           <ListItem
-            className={classes.routine}
-            onClick={() => props.openRoutineForm(routineData)}
+            {...listItemProps}
+            className={!disableRoutine && classes.routine}
           >
             <ListItemIcon>
               <CodeSharp />
@@ -77,7 +111,7 @@ export default function SideBarView(props) {
     );
   };
 
-  const sideBarWidth = props.sideBarWidth ? props.sideBarWidth : 200;
+  const sideBarWidth = props.sideBarWidth ? props.sideBarWidth : 280;
 
   const useStyles = makeStyles(theme => ({
     sideBar: {
@@ -127,11 +161,11 @@ export default function SideBarView(props) {
         }}
         variant="permanent"
         open={props.isSideBarOpen}
-        onClose={() => props.toggleSideBar()}
+        onClose={props.toggleSideBar}
       >
         <IconButton
           className={classes.chevronButton}
-          onClick={() => props.toggleSideBar()}
+          onClick={props.toggleSideBar}
         >
           <ChevronLeftSharp></ChevronLeftSharp>
           <Typography>MENU</Typography>
@@ -139,11 +173,12 @@ export default function SideBarView(props) {
         {sideList(props.routes, props.routinesList)}
       </Drawer>
 
-      {props.showRoutineForm && (
+      {props.displayRoutineForm && (
         <RoutineFormContainer
+          selectedComponent={props.selectedComponent}
           routineData={props.routineData}
           createRoutine={props.createRoutine}
-          closeRoutineForm={props.closeRoutineForm}
+          closeRoutineForm={() => props.toggleRoutineForm(null, false)}
         />
       )}
 

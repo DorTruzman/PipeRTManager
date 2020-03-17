@@ -24,6 +24,7 @@
     "react-dom": "^16.13.0",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.4.0",
+    "react-select-material-ui": "^6.3.0",
     "storm-react-diagrams": "^5.2.1"
   },
   "scripts": {

@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import SideBarView from "./side-bar-view";
+import ServerConfig from "../../config/server";
 
 export class SideBarContainer extends Component {
   constructor(props) {
@@ -7,7 +8,7 @@ export class SideBarContainer extends Component {
 
     this.state = {
       routinesList: [],
-      showRoutineForm: false,
+      displayRoutineForm: false,
       isComponentSelected: true
     };
 
@@ -15,11 +16,15 @@ export class SideBarContainer extends Component {
   }
 
   // TODO: Change this to toggle
-  openRoutineForm = routineData => {
-    if (this.props.isComponentSelected) {
+  openRoutineForm = (routineData, toggleState) => {
+    if (!toggleState) {
+      this.setState({
+        displayRoutineForm: false
+      });
+    } else if (this.props.isComponentSelected) {
       this.setState({
         isComponentSelected: true,
-        showRoutineForm: true,
+        displayRoutineForm: true,
         routineData: routineData
       });
     } else {
@@ -29,14 +34,8 @@ export class SideBarContainer extends Component {
     }
   };
 
-  closeRoutineForm = () => {
-    this.setState({
-      showRoutineForm: false
-    });
-  };
-
   getAllRoutines = () => {
-    fetch("http://localhost:3000/routines")
+    fetch(ServerConfig.SERVER_URL + ServerConfig.ROUTE_GET_ROUTINES)
       .then(res => res.json())
       .then(res => {
         if (res.routines) {
@@ -55,12 +54,12 @@ export class SideBarContainer extends Component {
         toggleSideBar={this.props.toggleSideBar}
         routes={this.props.routes}
         routinesList={this.state.routinesList}
-        showRoutineForm={this.state.showRoutineForm}
-        openRoutineForm={this.openRoutineForm}
-        closeRoutineForm={this.closeRoutineForm}
+        displayRoutineForm={this.state.displayRoutineForm}
+        toggleRoutineForm={this.openRoutineForm}
         routineData={this.state.routineData}
         createRoutine={this.props.createRoutine}
         isComponentSelected={this.state.isComponentSelected}
+        selectedComponent={this.props.selectedComponent}
       />
     );
   }

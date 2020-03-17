@@ -1,9 +1,4 @@
-import {
-  TransformSharp,
-  SettingsSharp,
-  ClearSharp,
-  CreateSharp
-} from "@material-ui/icons";
+import { TransformSharp, SettingsSharp, CreateSharp } from "@material-ui/icons";
 import WorkAreaContainer from "../components/WorkArea";
 
 export default {

@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import PipelineView from "./pipeline-view";
+import ServerConfig from "../../config/server";
 
 export class PipelineContainer extends Component {
   constructor(props) {
@@ -8,7 +9,10 @@ export class PipelineContainer extends Component {
 
   setSelectedComponent() {
     return this.props.components.map(comp => {
-      if (comp.name === this.props.selectedComponent) {
+      if (
+        this.props.selectedComponent &&
+        comp.name === this.props.selectedComponent.name
+      ) {
         return {
           ...comp,
           isSelected: true
@@ -22,23 +26,43 @@ export class PipelineContainer extends Component {
     });
   }
 
-  getRedisKey = componentData => {
-    if (!componentData.routines) {
-      return null;
+  getComponentIO = componentData => {
+    let streamKeys = {
+        streamIn: null,
+        streamOut: null
+      },
+      redisKeys = {
+        redisIn: null,
+        redisOut: null
+      };
+
+    if (!componentData.routines || !Array.isArray(componentData.routines)) {
+      return {
+        streamKeys,
+        redisKeys
+      };
     }
 
+    let firstRoutine = componentData.routines[0];
     let finalRoutine =
       componentData.routines[componentData.routines.length - 1];
 
-    if (
-      finalRoutine.routineName === "Send2Redis" &&
-      finalRoutine.params &&
-      finalRoutine.params.redis_key
-    ) {
-      return finalRoutine.params.redis_key;
+    if (firstRoutine.params && firstRoutine.params[ServerConfig.REDIS_READ]) {
+      redisKeys.redisIn = firstRoutine.params[ServerConfig.REDIS_READ];
     }
 
-    return null;
+    if (firstRoutine.params && firstRoutine.params["url"]) {
+      streamKeys.streamIn = firstRoutine.params["url"];
+    }
+
+    if (finalRoutine.params && finalRoutine.params[ServerConfig.REDIS_SEND]) {
+      redisKeys.redisOut = finalRoutine.params[ServerConfig.REDIS_SEND];
+    }
+
+    return {
+      streamKeys,
+      redisKeys
+    };
   };
 
   render() {
@@ -47,7 +71,7 @@ export class PipelineContainer extends Component {
         changeSelectedComponent={this.props.changeSelectedComponent}
         components={this.setSelectedComponent()}
         deleteComponent={this.props.deleteComponent}
-        getRedisKey={this.getRedisKey}
+        getComponentIO={this.getComponentIO}
       />
     );
   }
