@@ -37,11 +37,13 @@ export class PipelineContainer extends Component {
       };
 
     if (!componentData.routines || !Array.isArray(componentData.routines)) {
-      return redisKeys;
+      return {
+        streamKeys,
+        redisKeys
+      };
     }
 
     let firstRoutine = componentData.routines[0];
-    console.log("first routine = ", firstRoutine);
     let finalRoutine =
       componentData.routines[componentData.routines.length - 1];
 
