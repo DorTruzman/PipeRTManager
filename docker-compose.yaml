@@ -13,4 +13,4 @@ services:
         no_proxy:
         socks_proxy:
     ports:
-      - '3000:3000'
+      - '8080:3000'
