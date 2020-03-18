@@ -7,19 +7,19 @@ export default {
     path: "/",
     component: WorkAreaContainer,
     icon: CreateSharp
-  },
-  mypipes: {
-    dispName: "MY PIPELINES",
-    path: "/mypipes",
-    explicit: true,
-    component: "MyPipes",
-    icon: TransformSharp
-  },
-  settings: {
-    dispName: "SETTINGS",
-    path: "/settings",
-    explicit: true,
-    component: "Settings",
-    icon: SettingsSharp
   }
+  // mypipes: {
+  //   dispName: "MY PIPELINES",
+  //   path: "/mypipes",
+  //   explicit: true,
+  //   component: "MyPipes",
+  //   icon: TransformSharp
+  // },
+  // settings: {
+  //   dispName: "SETTINGS",
+  //   path: "/settings",
+  //   explicit: true,
+  //   component: "Settings",
+  //   icon: SettingsSharp
+  // }
 };

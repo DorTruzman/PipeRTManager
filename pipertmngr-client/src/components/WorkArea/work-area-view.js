@@ -9,7 +9,7 @@ import {
   Snackbar
 } from "@material-ui/core";
 import MuiAlert from "@material-ui/lab/Alert";
-import { Add, Done } from "@material-ui/icons";
+import { Add, Done, Clear } from "@material-ui/icons";
 import ComponentFormContainer from "../ComponentForm";
 import PipelineContainer from "../Pipeline";
 
@@ -25,7 +25,7 @@ export default function WorkAreaView(props) {
       marginRight: 50
     },
     contentShift: {
-      marginLeft: 300,
+      marginLeft: 260,
       transition: theme.transitions.create(["width", "margin"], {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.enteringScreen
@@ -33,16 +33,25 @@ export default function WorkAreaView(props) {
     },
     componentFab: {
       position: "absolute",
-      bottom: theme.spacing(14),
+      bottom: theme.spacing(17),
       right: theme.spacing(2),
       minWidth: "13em"
+    },
+    pipelineOptions: {
+      position: "absolute",
+      bottom: theme.spacing(13),
+      right: theme.spacing(6)
+    },
+    killFab: {
+      position: "absolute",
+      bottom: theme.spacing(6),
+      right: theme.spacing(14)
     },
     saveFab: {
       position: "absolute",
       bottom: theme.spacing(6),
       right: theme.spacing(2),
-      backgroundColor: "#81c784",
-      minWidth: "13em"
+      backgroundColor: "#81c784"
     },
     credits: {
       position: "absolute",
@@ -51,7 +60,8 @@ export default function WorkAreaView(props) {
       backgroundColor: "#c5c5c52e",
       borderRadius: "5em",
       paddingLeft: "0.4em",
-      paddingRight: "0.4em"
+      paddingRight: "0.4em",
+      fontStyle: "italic"
     },
     emptyWorkArea: {
       minHeight: "80vh"
@@ -75,7 +85,10 @@ export default function WorkAreaView(props) {
         onClose={props.toggleSuccessMessage}
       >
         <MuiAlert variant="filled" severity="success">
-          <b>PIPELINE IS SAVED SUCCESSFULLY! 😊</b>
+          <b>
+            PIPELINE IS {props.successMessage ? props.successMessage : "SAVED"}{" "}
+            SUCCESSFULLY! 😊
+          </b>
         </MuiAlert>
       </Snackbar>
       {props.components.length === 0 ? (
@@ -117,17 +130,34 @@ export default function WorkAreaView(props) {
         />
       )}
       <Fab
+        disabled={props.components.length >= 6}
         onClick={() => props.toggleComponentForm(true)}
         className={classes.componentFab}
         size="large"
-        color="secondary"
+        color="primary"
         variant="extended"
         aria-label="add"
       >
         <Add />
         COMPONENT
       </Fab>
+      <div className={classes.pipelineOptions}>
+        <b>PIPELINE OPTIONS:</b>
+      </div>
       <Fab
+        disabled={props.components.length < 1}
+        onClick={props.killPipeline}
+        className={classes.killFab}
+        size="large"
+        color="secondary"
+        variant="extended"
+        aria-label="add"
+      >
+        <Clear />
+        KILL
+      </Fab>
+      <Fab
+        disabled={props.components.length < 1}
         onClick={props.savePipeline}
         className={classes.saveFab}
         size="large"
@@ -136,7 +166,7 @@ export default function WorkAreaView(props) {
         aria-label="add"
       >
         <Done />
-        SAVE PIPELINE
+        SAVE
       </Fab>
       <Typography className={classes.credits}>
         PipeRT © 2020&nbsp;

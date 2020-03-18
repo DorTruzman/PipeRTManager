@@ -12,7 +12,7 @@ import {
 import { Menu } from "@material-ui/icons";
 
 export default function TopBarView(props) {
-  const sideBarWidth = props.sideBarWidth ? props.sideBarWidth : 280;
+  const sideBarWidth = props.sideBarWidth ? props.sideBarWidth : 240;
 
   const useStyles = makeStyles(theme => ({
     greeting: {

@@ -7,9 +7,22 @@ export class WorkAreaContainer extends Component {
     super(props);
 
     this.state = {
+      successMessage: "",
       showSuccessMessage: false
     };
   }
+
+  killPipeline = () => {
+    fetch(ServerConfig.SERVER_URL + ServerConfig.ROUTE_KILL_PIPELINE, {
+      method: "PUT",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      }
+    }).then(() => {
+      this.toggleSuccessMessage("KILLED");
+    });
+  };
 
   savePipeline = () => {
     let userComponents = [...this.props.components];
@@ -35,7 +48,7 @@ export class WorkAreaContainer extends Component {
           ) {
             let currRoutine = currentComponent.routines[currRoutineIndex];
             componentsToSend[index].routines.push({
-              routine_name: currRoutine.routineName,
+              routine_type_name: currRoutine.routineTypeName,
               ...currRoutine.params
             });
 
@@ -63,12 +76,13 @@ export class WorkAreaContainer extends Component {
       },
       body: JSON.stringify(componentsToSend)
     }).then(() => {
-      this.toggleSuccessMessage();
+      this.toggleSuccessMessage("SAVED");
     });
   };
 
-  toggleSuccessMessage = () => {
+  toggleSuccessMessage = successMessage => {
     this.setState({
+      successMessage: successMessage.toString(),
       showSuccessMessage: !this.state.showSuccessMessage
     });
   };
@@ -77,6 +91,7 @@ export class WorkAreaContainer extends Component {
     return (
       <WorkAreaView
         savePipeline={this.savePipeline}
+        killPipeline={this.killPipeline}
         changeSelectedComponent={this.props.changeSelectedComponent}
         createComponent={this.props.createComponent}
         createRoutine={this.props.createRoutine}
@@ -88,6 +103,7 @@ export class WorkAreaContainer extends Component {
         deleteComponent={this.props.deleteComponent}
         showSuccessMessage={this.state.showSuccessMessage}
         toggleSuccessMessage={this.toggleSuccessMessage}
+        successMessage={this.state.successMessage}
       />
     );
   }

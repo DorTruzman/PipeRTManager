@@ -11,21 +11,22 @@ router.get("/routines", function(req, res, next) {
     routines: [
       {
         name: "MessageFromRedis",
-        type: "HAS_TO_BE_FIRST"
+        type: 0
       },
       {
         name: "ListenToStream",
-        type: "HAS_TO_BE_FIRST"
+        type: 0
       },
       {
-        name: "DoStuff"
+        name: "DoStuff",
+        type: 1
       },
       {
         name: "DoMoreStuff"
       },
       {
         name: "MessageToRedis",
-        type: "HAS_TO_BE_LAST"
+        type: 2
       }
     ]
   };
@@ -35,6 +36,10 @@ router.get("/routines", function(req, res, next) {
 
 router.post("/pipeline", function(req, res, next) {
   res.json(req.body);
+});
+
+router.put("/kill", function(req, res, next) {
+  res.status(200).send();
 });
 
 router.get("/routineParams/:routineName", function(req, res, next) {

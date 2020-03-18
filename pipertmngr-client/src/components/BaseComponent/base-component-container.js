@@ -1,179 +1,89 @@
 import React, { Component } from "react";
-import ReactDOM from "react-dom";
 import BaseComponentView from "./base-component-view";
-import * as SRD from "storm-react-diagrams";
 import ServerConfig from "../../config/server";
+import BaseNodeView from "../BaseNode";
 
 export class BaseComponentContainer extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { prevZoomLevel: 100, canvasRef: React.createRef() };
+    this.state = {};
   }
 
-  componentDidUpdate() {
-    if (this.props.componentData && this.props.componentData.routines) {
-      this.setUpDiagram();
-    }
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      routineList: nextProps.componentData.routines
+        ? [...nextProps.componentData.routines]
+        : []
+    });
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    if (
-      this.props !== nextProps ||
-      !this.areStatesEqual(this.state, nextState) ||
-      !this.areAllNodesRendered(this.state)
-    ) {
-      return true;
-    }
+  composeLinks = () => {
+    let linkList = [];
+    if (this.state.routineList) {
+      let { routineList } = this.state;
 
-    return false;
-  }
+      for (let i = 0; i < routineList.length - 1; i++) {
+        let currRoutine = routineList[i];
+        let nextRoutine = routineList[i + 1];
 
-  remakeModel = () => {
-    this.forceUpdate();
-  };
+        if (
+          currRoutine.params.hasOwnProperty(ServerConfig.QUEUE_SEND) &&
+          nextRoutine.params.hasOwnProperty(ServerConfig.QUEUE_READ) &&
+          currRoutine.params[ServerConfig.QUEUE_SEND] ===
+            nextRoutine.params[ServerConfig.QUEUE_READ]
+        ) {
+          // Find the nodes
+          let currNode = this.props.componentData.name + "_item_" + i;
+          let nextNode = this.props.componentData.name + "_item_" + (i + 1);
 
-  areStatesEqual = (currentState, nextState) => {
-    return (
-      currentState.canvasRef &&
-      currentState.canvasRef.current &&
-      nextState.canvasRef.current &&
-      currentState.routines === nextState.routines &&
-      currentState.componentData === nextState.componentData &&
-      ((currentState.diagramEngine && nextState.diagramEngine) ||
-        !nextState.diagramEngine)
-    );
-  };
-
-  areAllNodesRendered = state => {
-    let model = this.state.diagramModel;
-
-    if (model) {
-      let allNodes = Object.keys(model.getNodes());
-      if (
-        Array.isArray(allNodes) &&
-        allNodes.length !== this.state.routineList.length
-      ) {
-        return false;
+          linkList.push({
+            source: currNode,
+            target: nextNode,
+            link: currRoutine.params[ServerConfig.QUEUE_SEND]
+          });
+        }
       }
     }
 
-    return true;
+    return linkList;
   };
 
-  getNodeByName = (nodes, name) => {
-    let keysArray = Object.keys(nodes);
-    for (let i = 0; i < keysArray.length; i++) {
-      if (nodes[keysArray[i]].name && nodes[keysArray[i]].name === name) {
-        return nodes[keysArray[i]];
-      }
-    }
+  createNodesDOM = () => {
+    if (this.state.routineList) {
+      const nodesList = this.state.routineList.map((routine, index) => {
+        let randomColor = ["green", "red", "blue", "orange", "grey", "purple"][
+          index % 6
+        ];
 
-    return null;
-  };
+        randomColor =
+          "linear-gradient(90deg, #343434 0%, " + randomColor + " 100%)";
+        let ports = [];
 
-  resizeHandler = widgetReference => {
-    if (this.state.diagramEngine) {
-      if (widgetReference) {
-        if (this.state.diagramEngine.canvas !== widgetReference) {
-          this.state.diagramEngine.setCanvas(widgetReference);
+        if (routine.params[ServerConfig.QUEUE_READ]) {
+          ports.push("In");
+        }
+        if (routine.params[ServerConfig.QUEUE_SEND]) {
+          ports.push("Out");
+        }
+        if (ports.length === 0) {
+          ports.push("None");
         }
 
-        this.state.diagramEngine.zoomToFit();
-      }
+        return (
+          <BaseNodeView
+            ref={this.props.componentData.name + "_item_" + index}
+            nodeColor={randomColor}
+            routineName={routine.params.name}
+            routineTypeName={routine.routineTypeName}
+            ports={ports.join("/")}
+          />
+        );
+      });
+
+      return <div className="flex-container">{nodesList}</div>;
     }
-  };
-
-  zoomUpdatedHandler = e => {
-    let { prevZoomLevel } = this.state;
-    let currentZoomLevel = e.zoom;
-    let roundedCurrentZoom = Math.ceil(currentZoomLevel / 10) * 10;
-    if (roundedCurrentZoom != 100 && currentZoomLevel === prevZoomLevel) {
-      this.forceUpdate();
-    }
-    this.setState({
-      prevZoomLevel: currentZoomLevel
-    });
-  };
-
-  composeLinks = (routineList, model) => {
-    let allNodes = model.getNodes();
-
-    for (let i = 0; i < routineList.length - 1; i++) {
-      let currRoutine = routineList[i];
-      let nextRoutine = routineList[i + 1];
-
-      if (
-        currRoutine.params.hasOwnProperty(ServerConfig.QUEUE_SEND) &&
-        nextRoutine.params.hasOwnProperty(ServerConfig.QUEUE_READ) &&
-        currRoutine.params[ServerConfig.QUEUE_SEND] ===
-          nextRoutine.params[ServerConfig.QUEUE_READ]
-      ) {
-        // Find the nodes
-        let currNode = this.getNodeByName(allNodes, currRoutine.params.name);
-        let nextNode = this.getNodeByName(allNodes, nextRoutine.params.name);
-        let link = currNode.getOutPorts()[0].link(nextNode.getInPorts()[0]);
-        link.setColor("black");
-        link.addLabel(currRoutine.params[ServerConfig.QUEUE_SEND]);
-        model.addLink(link);
-      }
-    }
-  };
-
-  composeNodesAndPorts = (routineList, model) => {
-    let currentX = 0;
-
-    routineList.forEach((routine, index) => {
-      // let randomColor = "#" + (((1 << 24) * Math.random()) | 0).toString(16);
-      let randomColor = ["green", "red", "blue", "orange", "black", "purple"][
-        index % 6
-      ];
-      let node = new SRD.DefaultNodeModel(routine.params.name, randomColor);
-      if (routine.params[ServerConfig.QUEUE_READ]) {
-        node.addInPort("In");
-      }
-      if (routine.params[ServerConfig.QUEUE_SEND]) {
-        node.addOutPort("Out");
-      }
-      node.x = currentX;
-      currentX += 175;
-      model.addNode(node);
-    });
-  };
-
-  setUpEngineAndModel = () => {
-    let engine = new SRD.DiagramEngine();
-    engine.installDefaultFactories();
-    engine.setCanvas(ReactDOM.findDOMNode(this.state.canvasRef.current));
-
-    let model = new SRD.DiagramModel();
-    this.composeNodesAndPorts(this.state.routineList, model);
-    this.composeLinks(this.state.routineList, model);
-
-    engine.setDiagramModel(model);
-    model.setLocked(true);
-    engine.nodesRendered = true;
-
-    model.addListener({
-      zoomUpdated: this.zoomUpdatedHandler
-    });
-
-    this.setState({
-      diagramEngine: engine,
-      diagramModel: model
-    });
-  };
-
-  setUpDiagram = () => {
-    this.setState(
-      {
-        routineList: this.props.componentData.routines
-          ? this.props.componentData.routines
-          : [],
-        prevZoomLevel: 100
-      },
-      this.setUpEngineAndModel
-    );
+    return null;
   };
 
   deleteComponent = () => {
@@ -186,16 +96,15 @@ export class BaseComponentContainer extends Component {
         isSelected={
           this.props.componentData && this.props.componentData.isSelected
         }
-        diagramEngine={this.state.diagramEngine}
-        diagramModel={this.state.diagramModel}
         componentData={this.props.componentData}
         changeSelected={this.props.changeSelected}
         deleteComponent={this.deleteComponent}
-        canvasRef={this.state.canvasRef}
-        remakeModel={this.remakeModel}
-        resizeHandler={this.resizeHandler}
-        zoomUpdatedHandler={this.zoomUpdatedHandler}
-      />
+        routineList={this.state.routineList}
+        linkList={this.composeLinks()}
+        nodeRefs={this.refs}
+      >
+        {this.createNodesDOM()}
+      </BaseComponentView>
     );
   }
 }
