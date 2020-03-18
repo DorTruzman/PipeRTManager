@@ -111,7 +111,7 @@ export default function SideBarView(props) {
     );
   };
 
-  const sideBarWidth = props.sideBarWidth ? props.sideBarWidth : 280;
+  const sideBarWidth = props.sideBarWidth ? props.sideBarWidth : 240;
 
   const useStyles = makeStyles(theme => ({
     sideBar: {
@@ -141,6 +141,11 @@ export default function SideBarView(props) {
       "&:hover": {
         color: "blue"
       }
+    },
+    credits: {
+      marginTop: "75%",
+      textAlign: "center",
+      fontStyle: "italic"
     }
   }));
 
@@ -171,6 +176,7 @@ export default function SideBarView(props) {
           <Typography>MENU</Typography>
         </IconButton>
         {sideList(props.routes, props.routinesList)}
+        <div className={classes.credits}>PipeRTManager V1.0 © 2020</div>
       </Drawer>
 
       {props.displayRoutineForm && (

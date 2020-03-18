@@ -42,7 +42,12 @@ export default function PipelineView(props) {
         }
         if (IOData.streamKeys.streamIn) {
           IOTypes.push("STREAM");
-          IOKeys.push(IOData.streamKeys.streamIn);
+          IOKeys.push(
+            IOData.streamKeys.streamIn.substring(
+              0,
+              Math.min(IOData.streamKeys.streamIn.length, 14)
+            ) + "..."
+          );
         }
       }
     } else {
@@ -55,7 +60,12 @@ export default function PipelineView(props) {
         }
         if (IOData.streamKeys.streamOut) {
           IOTypes.push("STREAM");
-          IOKeys.push(IOData.streamKeys.streamOut);
+          IOKeys.push(
+            IOData.streamKeys.streamOut.substring(
+              0,
+              Math.min(IOData.streamKeys.streamOut.length, 14)
+            ) + "..."
+          );
         }
       }
     }

@@ -10,3 +10,20 @@
 .node {
   cursor: pointer !important;
 }
+
+.flex-container {
+  display: inline-flex;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.endpointSourceLabel {
+  margin-top: -2rem;
+  color: white;
+  background-color: #0000007d;
+  padding: 0.15rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  border-radius: 50px;
+  margin-bottom: 2rem;
+}

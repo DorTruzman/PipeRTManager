@@ -12,8 +12,7 @@ const ComponentUtils = {
     });
 
     mutableComponents.push({
-      name: mutableName,
-      type: "TEST_TYPE"
+      name: mutableName
     });
 
     return mutableComponents;
@@ -46,13 +45,13 @@ const ComponentUtils = {
       updatedComponent
     };
   },
-  checkForRoutine: (component, routineName) => {
+  checkForRoutine: (component, routineTypeName) => {
     if (!component || !component.routines) {
       return false;
     }
 
     for (let i = 0; i < component.routines.length; i++) {
-      if (component.routines[i].routineName === routineName) {
+      if (component.routines[i].routineTypeName === routineTypeName) {
         return true;
       }
     }

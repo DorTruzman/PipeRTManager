@@ -1,5 +1,4 @@
-import React from "react";
-import ReactDOM from "react-dom";
+import React, { useEffect, createRef } from "react";
 import clsx from "clsx";
 import {
   makeStyles,
@@ -11,8 +10,10 @@ import {
   Typography
 } from "@material-ui/core";
 import { Delete } from "@material-ui/icons";
-import * as SRD from "storm-react-diagrams";
 import "./base-component-style.css";
+import "jsplumb/css/jsplumbtoolkit-defaults.css";
+import jsplumb from "jsplumb";
+const jsPlumbIn = jsplumb.jsPlumb;
 
 const useStyles = makeStyles(theme => ({
   gridItem: {
@@ -46,19 +47,63 @@ const useStyles = makeStyles(theme => ({
 export default function BaseComponentView(props) {
   const classes = useStyles();
   const theme = useTheme();
+  jsPlumbIn.reset();
+  let jsPlumbInstance = jsPlumbIn.getInstance();
+  jsPlumbInstance.reset();
+
+  useEffect(() => {
+    if (props.routineList) {
+      jsPlumbInstance.reset();
+      jsPlumbIn.reset();
+      jsPlumbInstance = jsPlumbIn.getInstance();
+
+      jsPlumbInstance.importDefaults({
+        Connector: ["Straight"],
+        Anchors: ["Right", "LeftMiddle"],
+        Overlays: [["Arrow", { location: 1 }]]
+      });
+
+      for (let index = 0; index < props.routineList.length; index++) {
+        let currRoutine = props.componentData.name + "_item_" + index;
+        let nextRoutine = props.componentData.name + "_item_" + (index + 1);
+
+        if (props.nodeRefs[currRoutine] && props.nodeRefs[nextRoutine]) {
+          props.linkList.forEach(currLink => {
+            if (
+              currLink.source === currRoutine &&
+              currLink.target === nextRoutine
+            ) {
+              jsPlumbInstance.connect({
+                source: props.nodeRefs[currRoutine],
+                target: props.nodeRefs[nextRoutine],
+                endpoint: "Blank",
+                anchor: "Continuous",
+                overlays: [
+                  [
+                    "Label",
+                    {
+                      label: currLink.link,
+                      location: [0.5],
+                      cssClass: "endpointSourceLabel"
+                    }
+                  ]
+                ]
+              });
+            }
+          });
+        }
+      }
+
+      window.dispatchEvent(new Event("resize"));
+    }
+  }, [props.routineList]);
 
   window.addEventListener("resize", () => {
-    if (
-      props.diagramEngine &&
-      props.componentData &&
-      props.componentData.routines
-    ) {
-      props.resizeHandler(ReactDOM.findDOMNode(props.canvasRef.current));
-    }
+    jsPlumbInstance.repaintEverything();
   });
 
   return (
-    <Grid item className={classes.gridItem} xs={4}>
+    <Grid item className={classes.gridItem} xs={5}>
       <Card
         className={clsx({
           [classes.glow]: props.isSelected
@@ -96,17 +141,7 @@ export default function BaseComponentView(props) {
               </div>
             </div>
           ) : (
-            props.diagramEngine && (
-              <SRD.DiagramWidget
-                ref={props.canvasRef}
-                allowLooseLinks={false}
-                allowCanvasTranslation={false}
-                allowCanvasZoom={false}
-                setLocked={true}
-                className={"srd-demo-canvas"}
-                diagramEngine={props.diagramEngine}
-              />
-            )
+            <React.Fragment>{props.children}</React.Fragment>
           )}
         </CardContent>
       </Card>
