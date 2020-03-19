@@ -2,10 +2,18 @@ version: '3.7'
 
 services:
 
-  pipe-rt-manager:
-    container_name: pipe-rt-manager
+  pipe-rt-manager-server:
+    container_name: pipe-rt-manager-server
     build:
-      context: .
+      context: ./pipertmngr-server 
+      dockerfile: Dockerfile
+    ports:
+      - '3000:3000'
+
+  pipe-rt-manager-client:
+    container_name: pipe-rt-manager-client
+    build:
+      context: ./pipertmngr-client
       dockerfile: Dockerfile
     ports:
       - '8080:8080'
