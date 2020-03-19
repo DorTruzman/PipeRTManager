@@ -10,7 +10,7 @@ COPY . .
 
 EXPOSE 8080
 
-WORKDIR /usr/src/app/pipertmngr-client
+# WORKDIR /usr/src/app/pipertmngr-client
 
 RUN npm install
 
