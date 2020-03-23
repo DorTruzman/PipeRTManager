@@ -102,8 +102,14 @@ export default function BaseComponentView(props) {
     jsPlumbInstance.repaintEverything();
   });
 
+  const deleteComponent = () => {
+    jsPlumbIn.reset();
+    jsPlumbInstance.reset();
+    props.deleteComponent();
+  };
+
   return (
-    <Grid item className={classes.gridItem} xs={5}>
+    <Grid item className={classes.gridItem} xs={4}>
       <Card
         className={clsx({
           [classes.glow]: props.isSelected
@@ -114,7 +120,7 @@ export default function BaseComponentView(props) {
             <React.Fragment>
               {props.componentData.name}
               <Delete
-                onClick={props.deleteComponent}
+                onClick={deleteComponent}
                 className={classes.closeButton}
               ></Delete>
             </React.Fragment>

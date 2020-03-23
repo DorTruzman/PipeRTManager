@@ -13,7 +13,8 @@ const BaseNodeView = React.forwardRef((props, ref) => {
   const useStyles = makeStyles(theme => ({
     cardItem: {
       textAlign: "left",
-      float: "left"
+      float: "left",
+      background: props.nodeColor
     },
     cardHeader: {
       padding: "0.3rem",
@@ -22,7 +23,6 @@ const BaseNodeView = React.forwardRef((props, ref) => {
     cardContent: {
       textAlign: "center",
       padding: "0.3rem",
-      background: props.nodeColor,
       cursor: "pointer",
       color: "white",
       fontSize: "0.7em",
@@ -44,25 +44,23 @@ const BaseNodeView = React.forwardRef((props, ref) => {
   const theme = useTheme();
 
   return (
-    <Grid item xs={2}>
-      <Card variant="outlined" className={classes.cardItem}>
-        <CardHeader
-          className={classes.cardHeader}
-          subheader={props.routineName}
-          subheaderTypographyProps={{
-            variant: "subtitle2",
-            style: { color: "white" }
-          }}
-        ></CardHeader>
-        <CardContent className={classes.cardContent} ref={ref}>
-          <div>{props.routineTypeName}</div>
-          <div className={classes.cardFooter}>
-            <Power className={classes.powerLogo} />
-            &nbsp;{props.ports}
-          </div>
-        </CardContent>
-      </Card>
-    </Grid>
+    <Card variant="outlined" className={classes.cardItem}>
+      <CardHeader
+        className={classes.cardHeader}
+        subheader={props.routineName}
+        subheaderTypographyProps={{
+          variant: "subtitle2",
+          style: { color: "white" }
+        }}
+      ></CardHeader>
+      <CardContent className={classes.cardContent} ref={ref}>
+        <div>{props.routineTypeName}</div>
+        <div className={classes.cardFooter}>
+          <Power className={classes.powerLogo} />
+          &nbsp;{props.ports}
+        </div>
+      </CardContent>
+    </Card>
   );
 });
 

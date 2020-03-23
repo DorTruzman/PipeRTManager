@@ -29,14 +29,28 @@ export default function RoutineFormView(props) {
       fontFamily: "Roboto, Arial",
       fontSize: "16px"
     },
+    genericInput: {
+      marginBottom: "1rem"
+    },
     numberInput: {
       marginTop: "16px"
     },
-    selectMargin: {
-      marginBottom: "3.5em"
+    dialogTitle: {
+      borderBottomColor: "black",
+      borderBottomStyle: "solid",
+      borderBottomWidth: "0.01rem"
     },
     dialog: {
-      overflowY: "scroll"
+      backgroundImage: "url(./images/formImage.jpg)",
+      backgroundSize: "cover",
+      minHeight: "30rem",
+      overflowY: "auto"
+    },
+    dialogActions: {
+      borderTopColor: "black",
+      borderTopStyle: "solid",
+      borderTopWidth: "0.01rem",
+      background: "linear-gradient(90deg, #b2b2b2 0%, white 40%, white 70%)"
     }
   }));
 
@@ -53,7 +67,7 @@ export default function RoutineFormView(props) {
         param === ServerConfig.QUEUE_SEND
       ) {
         return (
-          <div>
+          <div className={classes.genericInput}>
             <SingleSelect
               fullWidth={false}
               onChange={value => props.setSelectState(value, param)}
@@ -74,7 +88,7 @@ export default function RoutineFormView(props) {
 
       if (props.routineParams[param] === ServerConfig.DataTypes.Integer) {
         return (
-          <div>
+          <div className={classes.genericInput}>
             <Input
               className={classes.numberInput}
               type="number"
@@ -86,7 +100,7 @@ export default function RoutineFormView(props) {
       }
 
       return (
-        <div>
+        <div className={classes.genericInput}>
           <TextField
             onChange={e => props.setInputState(e, param)}
             label={param}
@@ -98,11 +112,14 @@ export default function RoutineFormView(props) {
 
   return (
     <Dialog
+      className={classes.dialogBorder}
       open={true}
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
     >
-      <DialogTitle id="alert-dialog-title">{"CREATE-A-ROUTINE"}</DialogTitle>
+      <DialogTitle className={classes.dialogTitle} id="alert-dialog-title">
+        {"CREATE-A-ROUTINE"}
+      </DialogTitle>
       <DialogContent className={classes.dialog}>
         <DialogContentText id="alert-dialog-description">
           {'ENTER THE PARAMETERS FOR "' +
@@ -110,7 +127,7 @@ export default function RoutineFormView(props) {
         </DialogContentText>
         <FormControl>{mapFields()}</FormControl>
       </DialogContent>
-      <DialogActions>
+      <DialogActions className={classes.dialogActions}>
         {props.notFilledFields.length ? (
           <Typography variant="subtitle2" color="error">
             {"Please fill out " + props.notFilledFields.join(", ") + "."}
