@@ -82,7 +82,10 @@ export class WorkAreaContainer extends Component {
 
   toggleSuccessMessage = successMessage => {
     this.setState({
-      successMessage: successMessage.toString(),
+      successMessage:
+        typeof successMessage === "string"
+          ? successMessage.toString()
+          : this.state.successMessage,
       showSuccessMessage: !this.state.showSuccessMessage
     });
   };
