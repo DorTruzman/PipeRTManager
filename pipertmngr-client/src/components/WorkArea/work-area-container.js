@@ -3,6 +3,7 @@ import WorkAreaView from "./work-area-view";
 import ServerConfig from "../../config/server";
 import YAML from "json-to-pretty-yaml";
 import jsYAML from "js-yaml";
+import ServerUtils from "../../utils/ServerUtils";
 
 export class WorkAreaContainer extends Component {
   constructor(props) {
@@ -23,12 +24,7 @@ export class WorkAreaContainer extends Component {
 
   loadPipeline = async (buffer, isYaml) => {
     let pipelineData;
-    let routineList = await fetch(
-      ServerConfig.SERVER_URL + ServerConfig.ROUTE_GET_ROUTINES
-    );
-    routineList = await routineList.json();
-    routineList = routineList.routines;
-
+    let routineList = await ServerUtils.getRoutines();
     let routineTypes = {};
 
     routineList.forEach(routine => {
@@ -60,13 +56,7 @@ export class WorkAreaContainer extends Component {
   };
 
   killPipeline = () => {
-    fetch(ServerConfig.SERVER_URL + ServerConfig.ROUTE_KILL_PIPELINE, {
-      method: "PUT",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      }
-    }).then(() => {
+    ServerUtils.killPipeline().then(() => {
       this.toggleSuccessMessage("KILLED");
     });
   };
@@ -117,14 +107,7 @@ export class WorkAreaContainer extends Component {
       });
     }
 
-    fetch(ServerConfig.SERVER_URL + ServerConfig.ROUTE_SAVE_PIPELINE, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(componentsToSend)
-    }).then(() => {
+    ServerUtils.savePipeline(componentsToSend).then(() => {
       let filename = "PipelineExport.yaml";
       let contentType = "application/text;charset=utf-8;";
       if (window.navigator && window.navigator.msSaveOrOpenBlob) {

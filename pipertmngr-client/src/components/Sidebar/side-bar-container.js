@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import SideBarView from "./side-bar-view";
 import ServerConfig from "../../config/server";
+import ServerUtils from "../../utils/ServerUtils";
 
 export class SideBarContainer extends Component {
   constructor(props) {
@@ -33,16 +34,11 @@ export class SideBarContainer extends Component {
     }
   };
 
-  getAllRoutines = () => {
-    fetch(ServerConfig.SERVER_URL + ServerConfig.ROUTE_GET_ROUTINES)
-      .then(res => res.json())
-      .then(res => {
-        if (res.routines) {
-          this.setState({
-            routinesList: res.routines
-          });
-        }
-      });
+  getAllRoutines = async () => {
+    const routinesList = await ServerUtils.getRoutines();
+    this.setState({
+      routinesList
+    });
   };
 
   render() {

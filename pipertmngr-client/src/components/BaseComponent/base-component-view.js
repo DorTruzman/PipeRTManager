@@ -48,9 +48,7 @@ const useStyles = makeStyles(theme => ({
 export default function BaseComponentView(props) {
   const classes = useStyles();
   const theme = useTheme();
-  jsPlumbIn.reset();
   let jsPlumbInstance = jsPlumbIn.getInstance();
-  jsPlumbInstance.reset();
 
   useEffect(() => {
     if (props.routineList) {
@@ -95,17 +93,19 @@ export default function BaseComponentView(props) {
       }
 
       props.updateRefs();
-      window.dispatchEvent(new Event("resize"));
     }
+
+    return () => {
+      jsPlumbIn.reset();
+      jsPlumbInstance.reset();
+    };
   }, [props.nodeRefs, props.routineList]);
 
   const onResize = () => {
     jsPlumbInstance.repaintEverything();
   };
 
-  window.addEventListener("resize", () => {
-    onResize();
-  });
+  window.addEventListener("resize", onResize);
 
   const deleteComponent = () => {
     jsPlumbIn.reset();

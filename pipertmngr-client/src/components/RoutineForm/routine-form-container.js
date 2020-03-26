@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import RoutineFormView from "./routine-form-view";
 import ServerConfig from "../../config/server";
+import ServerUtils from "../../utils/ServerUtils";
 
 export class RoutineFormContainer extends Component {
   constructor(props) {
@@ -69,16 +70,11 @@ export class RoutineFormContainer extends Component {
   };
 
   getParams = async () => {
-    const fetchRes = await fetch(
-      ServerConfig.SERVER_URL +
-        ServerConfig.ROUTE_GET_ROUTINE_PARAMS +
-        "/" +
-        this.props.routineData.name
+    const routineParams = await ServerUtils.getRoutineParams(
+      this.props.routineData.name
     );
-    const resJSON = await fetchRes.json();
-
     this.setState({
-      routineParams: resJSON
+      routineParams
     });
   };
 
