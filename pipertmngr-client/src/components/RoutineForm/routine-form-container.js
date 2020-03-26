@@ -53,8 +53,8 @@ export class RoutineFormContainer extends Component {
 
     if (notFilledFields.length === 0) {
       this.props.createRoutine({
-        routineTypeName: this.props.routineData.name,
-        routineType: this.props.routineData.type,
+        routine_type_name: this.props.routineData.name,
+        routine_type: this.props.routineData.type,
         params: {
           ...parametersInput
         }

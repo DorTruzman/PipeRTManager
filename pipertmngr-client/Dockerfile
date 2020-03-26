@@ -1,17 +1,13 @@
-FROM node:12-alpine3.11
-    
-# Create app directory
-WORKDIR /usr/src/app
-
-# RUN npm ci --only=production
-
-# Bundle app source
+FROM node:12-alpine3.11 AS builder
+WORKDIR /app
 COPY . .
-
 EXPOSE 8080
 
-# WORKDIR /usr/src/app/pipertmngr-client
+RUN yarn install
+RUN yarn run build
 
-RUN npm install
-
-CMD [ "npm", "start" ]
+FROM node:12-alpine3.11
+RUN yarn global add serve
+WORKDIR /app
+COPY --from=builder /app/build .
+CMD ["serve", "-p", "8080", "-s", "."]doc

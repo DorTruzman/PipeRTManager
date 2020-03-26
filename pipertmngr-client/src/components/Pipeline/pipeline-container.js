@@ -5,25 +5,29 @@ import ServerConfig from "../../config/server";
 export class PipelineContainer extends Component {
   constructor(props) {
     super(props);
+
+    this.state = {};
   }
 
   setSelectedComponent() {
-    return this.props.components.map(comp => {
-      if (
-        this.props.selectedComponent &&
-        comp.name === this.props.selectedComponent.name
-      ) {
-        return {
-          ...comp,
-          isSelected: true
-        };
-      } else {
-        return {
-          ...comp,
-          isSelected: false
-        };
-      }
-    });
+    if (this.props.components) {
+      return this.props.components.map(comp => {
+        if (
+          this.props.selectedComponent &&
+          comp.name === this.props.selectedComponent.name
+        ) {
+          return {
+            ...comp,
+            isSelected: true
+          };
+        } else {
+          return {
+            ...comp,
+            isSelected: false
+          };
+        }
+      });
+    }
   }
 
   getComponentIO = componentData => {

@@ -1,16 +1,3 @@
-.srd-demo-canvas {
-  height: 10vh;
-  cursor: pointer !important;
-}
-
-.srd-link-layer {
-  cursor: pointer !important;
-}
-
-.node {
-  cursor: pointer !important;
-}
-
 .flex-container {
   display: inline-flex;
   width: 100%;

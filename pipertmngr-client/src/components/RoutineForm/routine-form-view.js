@@ -20,7 +20,6 @@ import { Done, Clear } from "@material-ui/icons";
 import ComponentUtils from "../../utils/ComponentUtils";
 import ServerConfig from "../../config/server";
 import { SingleSelect } from "react-select-material-ui";
-import "./routine-form-style.css";
 
 export default function RoutineFormView(props) {
   const useStyles = makeStyles(theme => ({

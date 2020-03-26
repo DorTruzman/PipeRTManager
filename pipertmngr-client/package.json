@@ -14,6 +14,8 @@
     "closest": "^0.0.1",
     "clsx": "^1.1.0",
     "dagre": "^0.8.5",
+    "js-yaml": "^3.13.1",
+    "json-to-pretty-yaml": "^1.2.2",
     "jsplumb": "^2.12.14",
     "jss-rtl": "^0.3.0",
     "lodash": "^4.17.15",
@@ -22,16 +24,20 @@
     "paths-js": "^0.4.10",
     "react": "^16.13.0",
     "react-dom": "^16.13.0",
+    "react-resize-detector": "^4.2.1",
     "react-router-dom": "^5.1.2",
-    "react-scripts": "3.4.0",
+    "react-scripts": "*",
     "react-select-material-ui": "^6.3.0",
-    "storm-react-diagrams": "^5.2.1"
+    "@babel/preset-env": "7.8.0"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
+  },
+  "resolutions": {
+    "@babel/preset-env": "^7.8.7"
   },
   "eslintConfig": {
     "extends": "react-app"

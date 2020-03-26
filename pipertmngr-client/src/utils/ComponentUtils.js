@@ -51,7 +51,7 @@ const ComponentUtils = {
     }
 
     for (let i = 0; i < component.routines.length; i++) {
-      if (component.routines[i].routineTypeName === routineTypeName) {
+      if (component.routines[i].routine_type_name === routineTypeName) {
         return true;
       }
     }
@@ -64,7 +64,7 @@ const ComponentUtils = {
     }
 
     for (let i = 0; i < component.routines.length; i++) {
-      if (component.routines[i].routineType === routineType) {
+      if (component.routines[i].routine_type === routineType) {
         return true;
       }
     }

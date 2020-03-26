@@ -45,6 +45,12 @@ export class MasterContainer extends Component {
     };
   }
 
+  setPipeline = pipeline => {
+    this.setState({
+      components: pipeline
+    });
+  };
+
   createComponent = name => {
     this.setState({
       components: ComponentUtils.createComponent(this.state.components, name)
@@ -128,9 +134,7 @@ export class MasterContainer extends Component {
             <Route
               exact
               path={routeData.path}
-              render={() => (
-                <TagName isSideBarOpen={this.state.isSideBarOpen} />
-              )}
+              render={() => <TagName isSideBarOpen={true} />}
             />
           );
         return (
@@ -146,7 +150,8 @@ export class MasterContainer extends Component {
                 showComponentForm={this.state.showComponentForm}
                 selectedComponent={this.state.selectedComponent}
                 deleteComponent={this.deleteComponent}
-                isSideBarOpen={this.state.isSideBarOpen}
+                isSideBarOpen={true}
+                setPipeline={this.setPipeline}
               />
             )}
           />
@@ -162,7 +167,7 @@ export class MasterContainer extends Component {
           <CssBaseline />
           <BrowserRouter>
             <TopBarContainer
-              isSideBarOpen={this.state.isSideBarOpen}
+              isSideBarOpen={true}
               toggleSideBar={this.toggleSideBar}
             />
             <SideBarContainer
@@ -170,7 +175,7 @@ export class MasterContainer extends Component {
               selectedComponent={this.state.selectedComponent}
               routes={RoutesConfig}
               toggleSideBar={this.toggleSideBar}
-              isSideBarOpen={this.state.isSideBarOpen}
+              isSideBarOpen={true}
               createRoutine={this.createRoutine}
               isComponentSelected={this.state.isComponentSelected}
             />

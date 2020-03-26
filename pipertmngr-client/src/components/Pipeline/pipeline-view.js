@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { makeStyles, useTheme, Grid, Typography } from "@material-ui/core";
 import BaseComponentContainer from "../BaseComponent";
 
@@ -102,7 +102,7 @@ export default function PipelineView(props) {
       let IOData = props.getComponentIO(components[index]);
 
       return (
-        <React.Fragment>
+        <React.Fragment key={"Comp" + index}>
           {getIOArrow(IOData, true)}
           <BaseComponentContainer
             changeSelected={props.changeSelectedComponent}

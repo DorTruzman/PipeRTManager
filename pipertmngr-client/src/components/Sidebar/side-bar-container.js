@@ -15,8 +15,7 @@ export class SideBarContainer extends Component {
     this.getAllRoutines();
   }
 
-  // TODO: Change this to toggle
-  openRoutineForm = (routineData, toggleState) => {
+  toggleRoutineForm = (routineData, toggleState) => {
     if (!toggleState) {
       this.setState({
         displayRoutineForm: false
@@ -55,7 +54,7 @@ export class SideBarContainer extends Component {
         routes={this.props.routes}
         routinesList={this.state.routinesList}
         displayRoutineForm={this.state.displayRoutineForm}
-        toggleRoutineForm={this.openRoutineForm}
+        toggleRoutineForm={this.toggleRoutineForm}
         routineData={this.state.routineData}
         createRoutine={this.props.createRoutine}
         isComponentSelected={this.state.isComponentSelected}

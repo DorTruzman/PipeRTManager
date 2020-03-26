@@ -93,7 +93,7 @@ export default function SideBarView(props) {
     }
 
     return (
-      <div>
+      <div style={{ marginTop: "0.3em" }}>
         <List>{linksJSX}</List>
         <Divider />
         {routinesJSX && (
@@ -142,6 +142,11 @@ export default function SideBarView(props) {
         color: "blue"
       }
     },
+    menuCaption: {
+      marginTop: "0.3em",
+      fontFamily: "Roboto Thin",
+      textAlign: "center"
+    },
     credits: {
       marginTop: "75%",
       textAlign: "center",
@@ -168,13 +173,16 @@ export default function SideBarView(props) {
         open={props.isSideBarOpen}
         onClose={props.toggleSideBar}
       >
-        <IconButton
+        <Typography variant="h4" className={classes.menuCaption}>
+          MENU
+        </Typography>
+        {/* <IconButton
           className={classes.chevronButton}
           onClick={props.toggleSideBar}
         >
           <ChevronLeftSharp></ChevronLeftSharp>
           <Typography>MENU</Typography>
-        </IconButton>
+        </IconButton> */}
         {sideList(props.routes, props.routinesList)}
         <div className={classes.credits}>PipeRTManager V1.0 © 2020</div>
       </Drawer>

@@ -1,3 +1,4 @@
+import ReactResizeDetector from "react-resize-detector";
 import React, { useEffect, createRef } from "react";
 import clsx from "clsx";
 import {
@@ -55,7 +56,6 @@ export default function BaseComponentView(props) {
     if (props.routineList) {
       jsPlumbInstance.reset();
       jsPlumbIn.reset();
-      jsPlumbInstance = jsPlumbIn.getInstance();
 
       jsPlumbInstance.importDefaults({
         Connector: ["Straight"],
@@ -94,12 +94,17 @@ export default function BaseComponentView(props) {
         }
       }
 
+      props.updateRefs();
       window.dispatchEvent(new Event("resize"));
     }
-  }, [props.routineList]);
+  }, [props.nodeRefs, props.routineList]);
+
+  const onResize = () => {
+    jsPlumbInstance.repaintEverything();
+  };
 
   window.addEventListener("resize", () => {
-    jsPlumbInstance.repaintEverything();
+    onResize();
   });
 
   const deleteComponent = () => {
@@ -147,7 +152,9 @@ export default function BaseComponentView(props) {
               </div>
             </div>
           ) : (
-            <React.Fragment>{props.children}</React.Fragment>
+            <ReactResizeDetector handleWidth handleHeight onResize={onResize}>
+              <React.Fragment>{props.children}</React.Fragment>
+            </ReactResizeDetector>
           )}
         </CardContent>
       </Card>

@@ -9,9 +9,10 @@ import {
   Snackbar
 } from "@material-ui/core";
 import MuiAlert from "@material-ui/lab/Alert";
-import { Add, Done, Clear } from "@material-ui/icons";
+import { Add, Done, Clear, FileCopy } from "@material-ui/icons";
 import ComponentFormContainer from "../ComponentForm";
 import PipelineContainer from "../Pipeline";
+import PipelineFormContainer from "../PipelineForm";
 
 export default function WorkAreaView(props) {
   const useStyles = makeStyles(theme => ({
@@ -35,17 +36,22 @@ export default function WorkAreaView(props) {
       position: "absolute",
       bottom: theme.spacing(17),
       right: theme.spacing(2),
-      minWidth: "13em"
+      minWidth: "20em"
     },
     pipelineOptions: {
       position: "absolute",
       bottom: theme.spacing(13),
-      right: theme.spacing(6)
+      right: theme.spacing(11)
+    },
+    loadFab: {
+      position: "absolute",
+      bottom: theme.spacing(6),
+      right: theme.spacing(26)
     },
     killFab: {
       position: "absolute",
       bottom: theme.spacing(6),
-      right: theme.spacing(14)
+      right: theme.spacing(14.5)
     },
     saveFab: {
       position: "absolute",
@@ -56,7 +62,7 @@ export default function WorkAreaView(props) {
     credits: {
       position: "absolute",
       bottom: theme.spacing(1),
-      right: theme.spacing(2),
+      right: theme.spacing(5),
       backgroundColor: "#c5c5c52e",
       borderRadius: "5em",
       paddingLeft: "0.4em",
@@ -129,6 +135,12 @@ export default function WorkAreaView(props) {
           toggleComponentForm={props.toggleComponentForm}
         />
       )}
+      {props.showPipelineForm && (
+        <PipelineFormContainer
+          loadPipeline={props.loadPipeline}
+          togglePipelineForm={props.togglePipelineForm}
+        />
+      )}
       <Fab
         disabled={props.components.length >= 6}
         onClick={() => props.toggleComponentForm(true)}
@@ -144,6 +156,18 @@ export default function WorkAreaView(props) {
       <div className={classes.pipelineOptions}>
         <b>PIPELINE OPTIONS:</b>
       </div>
+      <Fab
+        disabled={!localStorage.getItem("lastPipeline")}
+        onClick={() => props.togglePipelineForm()}
+        className={classes.loadFab}
+        size="large"
+        color="primary"
+        variant="extended"
+        aria-label="add"
+      >
+        <FileCopy />
+        LOAD
+      </Fab>
       <Fab
         disabled={props.components.length < 1}
         onClick={props.killPipeline}

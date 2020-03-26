@@ -1,7 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
-import "storm-react-diagrams/dist/style.min.css";
 import MasterContainer from "./components/Master";
 import * as serviceWorker from "./serviceWorker";
 

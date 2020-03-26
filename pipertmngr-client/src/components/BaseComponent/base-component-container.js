@@ -10,6 +10,14 @@ export class BaseComponentContainer extends Component {
     this.state = {};
   }
 
+  componentDidMount() {
+    this.setState({
+      routineList: this.props.componentData.routines
+        ? [...this.props.componentData.routines]
+        : []
+    });
+  }
+
   componentWillReceiveProps(nextProps) {
     this.setState({
       routineList: nextProps.componentData.routines
@@ -72,10 +80,11 @@ export class BaseComponentContainer extends Component {
 
         return (
           <BaseNodeView
+            key={"Node" + index}
             ref={this.props.componentData.name + "_item_" + index}
             nodeColor={randomColor}
             routineName={routine.params.name}
-            routineTypeName={routine.routineTypeName}
+            routineTypeName={routine.routine_type_name}
             ports={ports.join("/")}
           />
         );
@@ -90,6 +99,10 @@ export class BaseComponentContainer extends Component {
     this.props.deleteComponent(this.props.componentData);
   };
 
+  updateRefs = () => {
+    this.forceUpdate();
+  };
+
   render() {
     return (
       <BaseComponentView
@@ -102,6 +115,7 @@ export class BaseComponentContainer extends Component {
         routineList={this.state.routineList}
         linkList={this.composeLinks()}
         nodeRefs={this.refs}
+        updateRefs={this.updateRefs}
       >
         {this.createNodesDOM()}
       </BaseComponentView>
