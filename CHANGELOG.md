@@ -2,11 +2,11 @@
 
 All notable changes to the Pipeline Manager UI project will be documented in this file.
 
-## [1.0.0] - 28-03-2020
+## [0.1.0] - 2020-03-28
 
 ### Added
 
-- Pipeline Manager interactive GUI (Graphical User Interface) - *NOT YET INTEGRATED WITH THE REAL PIPERT SERVER* - with the following features:
+- Pipeline Manager interactive GUI (Graphical User Interface) - **NOT YET INTEGRATED WITH THE REAL PIPERT SERVER** - with the following features:
 	- "Create-A-Component"
 	- "Create-A-Routine", complete with queues between routines
 	- Delete a component
