@@ -1,2 +1,4 @@
+/pipertmngr-client/node_modules
+/pipertmngr-server/node_modules
 node_modules
 npm-debug.log
