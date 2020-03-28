@@ -1,0 +1,21 @@
+.flex-container {
+  display: inline-flex;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.endpointSourceLabel {
+  margin-top: -2rem;
+  color: white;
+  background-color: #0000007d;
+  padding: 0.15rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  border-radius: 50px;
+  margin-bottom: 2rem;
+}
+
+.css-kj6f9i-menu {
+  z-index: 9999999 !important;
+  position: unset !important;
+}
