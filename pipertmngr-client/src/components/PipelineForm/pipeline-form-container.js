@@ -1,13 +1,11 @@
 import React, { Component } from "react";
 import PipelineFormView from "./pipeline-form-view";
-import ServerConfig from "../../config/server";
 
 export class PipelineFormContainer extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      parametersInput: {},
       selectedOption: null
     };
   }

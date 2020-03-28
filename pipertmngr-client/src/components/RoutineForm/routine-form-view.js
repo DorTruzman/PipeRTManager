@@ -1,5 +1,4 @@
-import React, { useRef } from "react";
-import clsx from "clsx";
+import React from "react";
 import {
   Dialog,
   DialogTitle,
@@ -8,10 +7,7 @@ import {
   DialogActions,
   Button,
   TextField,
-  Select,
-  InputLabel,
   FormControl,
-  MenuItem,
   makeStyles,
   Typography,
   Input
@@ -60,7 +56,7 @@ export default function RoutineFormView(props) {
       props.selectedComponent
     );
 
-    return Object.keys(props.routineParams).map(function(param, index) {
+    return Object.keys(props.routineParams).map(function(param) {
       if (
         param === ServerConfig.QUEUE_READ ||
         param === ServerConfig.QUEUE_SEND

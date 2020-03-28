@@ -9,7 +9,7 @@ import {
   useTheme,
   Grid
 } from "@material-ui/core";
-import { Menu } from "@material-ui/icons";
+import { Menu, Wifi, WifiOff } from "@material-ui/icons";
 
 export default function TopBarView(props) {
   const sideBarWidth = props.sideBarWidth ? props.sideBarWidth : 240;
@@ -41,6 +41,17 @@ export default function TopBarView(props) {
     },
     hide: {
       display: "none"
+    },
+    isAlive: {
+      fontFamily: "Roboto Thin"
+    },
+    wifiOn: {
+      marginTop: "0.1em",
+      fill: "white"
+    },
+    wifiOff: {
+      marginTop: "0.1em",
+      fill: "black"
     }
   }));
 
@@ -69,13 +80,25 @@ export default function TopBarView(props) {
           </IconButton>
           <img className={classes.pipelinePic} src="/images/pipeline.png"></img>
           &nbsp;&nbsp;&nbsp;
-          <Grid justify="space-between" container spacing={24}>
+          <Grid justify="space-between" container spacing={10}>
             <Grid item>
               <Typography variant="h4">PIPELINE MANAGER</Typography>
             </Grid>
             <Grid item>
-              <Typography className={classes.greeting} variant="h6">
+              <Typography className={classes.greeting} variant="h5">
                 {props.greeting}
+              </Typography>
+            </Grid>
+            <Grid item>
+              <Typography className={classes.isAlive} variant="h6">
+                {"PIPELINE SERVER IS " +
+                  (props.isAlive ? "CONNECTED" : "DISCONNECTED")}
+                &nbsp;
+                {props.isAlive ? (
+                  <Wifi className={classes.wifiOn} />
+                ) : (
+                  <WifiOff className={classes.wifiOff} />
+                )}
               </Typography>
             </Grid>
           </Grid>

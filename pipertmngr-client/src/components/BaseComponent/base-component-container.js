@@ -8,10 +8,12 @@ export class BaseComponentContainer extends Component {
     super(props);
 
     this.state = {};
+    this.baseNodeRefs = {};
   }
 
   componentDidMount() {
     this.setState({
+      nodeRefs: this.baseNodeRefs,
       routineList: this.props.componentData.routines
         ? [...this.props.componentData.routines]
         : []
@@ -60,6 +62,10 @@ export class BaseComponentContainer extends Component {
   createNodesDOM = () => {
     if (this.state.routineList) {
       const nodesList = this.state.routineList.map((routine, index) => {
+        this.baseNodeRefs[
+          this.props.componentData.name + "_item_" + index
+        ] = React.createRef();
+
         let randomColor = ["green", "red", "blue", "orange", "grey", "purple"][
           index % 6
         ];
@@ -81,7 +87,11 @@ export class BaseComponentContainer extends Component {
         return (
           <BaseNodeView
             key={"Node" + index}
-            ref={this.props.componentData.name + "_item_" + index}
+            ref={
+              this.baseNodeRefs[
+                this.props.componentData.name + "_item_" + index
+              ]
+            }
             nodeColor={randomColor}
             routineName={routine.params.name}
             routineTypeName={routine.routine_type_name}
@@ -99,10 +109,6 @@ export class BaseComponentContainer extends Component {
     this.props.deleteComponent(this.props.componentData);
   };
 
-  updateRefs = () => {
-    this.forceUpdate();
-  };
-
   render() {
     return (
       <BaseComponentView
@@ -114,8 +120,7 @@ export class BaseComponentContainer extends Component {
         deleteComponent={this.deleteComponent}
         routineList={this.state.routineList}
         linkList={this.composeLinks()}
-        nodeRefs={this.refs}
-        updateRefs={this.updateRefs}
+        nodeRefs={this.state.nodeRefs}
       >
         {this.createNodesDOM()}
       </BaseComponentView>

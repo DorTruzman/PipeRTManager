@@ -12,9 +12,24 @@ export class WorkAreaContainer extends Component {
     this.state = {
       successMessage: "",
       showSuccessMessage: false,
-      showPipelineForm: false
+      showPipelineForm: false,
+      showSpinner: false
     };
   }
+
+  toggleSpinner = toggleState => {
+    let spinnerState = !this.state.showSpinner;
+
+    if (toggleState === "ON") {
+      spinnerState = true;
+    } else if (toggleState === "OFF") {
+      spinnerState = false;
+    }
+
+    this.setState({
+      showSpinner: spinnerState
+    });
+  };
 
   togglePipelineForm = () => {
     this.setState({
@@ -36,16 +51,18 @@ export class WorkAreaContainer extends Component {
       pipelineData = pipelineData.map(comp => {
         return {
           name: comp.name,
-          routines: comp.routines.map(routine => {
-            let paramsObject = { ...routine };
-            delete paramsObject.routine_type_name;
+          routines:
+            comp.routines &&
+            comp.routines.map(routine => {
+              let paramsObject = { ...routine };
+              delete paramsObject.routine_type_name;
 
-            return {
-              routine_type_name: routine.routine_type_name,
-              routine_type: routineTypes[routine.routine_type_name],
-              params: { ...paramsObject }
-            };
-          })
+              return {
+                routine_type_name: routine.routine_type_name,
+                routine_type: routineTypes[routine.routine_type_name],
+                params: { ...paramsObject }
+              };
+            })
         };
       });
     } else {
@@ -56,12 +73,21 @@ export class WorkAreaContainer extends Component {
   };
 
   killPipeline = () => {
-    ServerUtils.killPipeline().then(() => {
-      this.toggleSuccessMessage("KILLED");
-    });
+    this.toggleSpinner("ON");
+
+    ServerUtils.killPipeline()
+      .then(() => {
+        this.toggleSuccessMessage("KILLED");
+        this.toggleSpinner("OFF");
+      })
+      .catch(() => {
+        this.toggleErrorMessage("KILLED");
+        this.toggleSpinner("OFF");
+      });
   };
 
   savePipeline = () => {
+    this.toggleSpinner("ON");
     let userComponents = [...this.props.components];
     let componentsToSend = [];
 
@@ -107,30 +133,46 @@ export class WorkAreaContainer extends Component {
       });
     }
 
-    ServerUtils.savePipeline(componentsToSend).then(() => {
-      let filename = "PipelineExport.yaml";
-      let contentType = "application/text;charset=utf-8;";
-      if (window.navigator && window.navigator.msSaveOrOpenBlob) {
-        var blob = new Blob(
-          [decodeURIComponent(encodeURI(YAML.stringify(componentsToSend)))],
-          { type: contentType }
-        );
-        navigator.msSaveOrOpenBlob(blob, filename);
-      } else {
-        var a = document.createElement("a");
-        a.download = filename;
-        a.href =
-          "data:" +
-          contentType +
-          "," +
-          encodeURIComponent(YAML.stringify(componentsToSend));
-        a.target = "_blank";
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-      }
+    ServerUtils.savePipeline(componentsToSend)
+      .then(() => {
+        let filename = "PipelineExport.yaml";
+        let contentType = "application/text;charset=utf-8;";
+        if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+          var blob = new Blob(
+            [decodeURIComponent(encodeURI(YAML.stringify(componentsToSend)))],
+            { type: contentType }
+          );
+          navigator.msSaveOrOpenBlob(blob, filename);
+        } else {
+          var a = document.createElement("a");
+          a.download = filename;
+          a.href =
+            "data:" +
+            contentType +
+            "," +
+            encodeURIComponent(YAML.stringify(componentsToSend));
+          a.target = "_blank";
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+        }
 
-      this.toggleSuccessMessage("SAVED");
+        this.toggleSuccessMessage("SAVED");
+        this.toggleSpinner("OFF");
+      })
+      .catch(() => {
+        this.toggleErrorMessage("SAVED");
+        this.toggleSpinner("OFF");
+      });
+  };
+
+  toggleErrorMessage = errorMessage => {
+    this.setState({
+      errorMessage:
+        typeof errorMessage === "string"
+          ? errorMessage.toString()
+          : this.state.errorMessage,
+      showErrorMessage: !this.state.showErrorMessage
     });
   };
 
@@ -162,8 +204,12 @@ export class WorkAreaContainer extends Component {
         selectedComponent={this.props.selectedComponent}
         deleteComponent={this.props.deleteComponent}
         showSuccessMessage={this.state.showSuccessMessage}
+        showErrorMessage={this.state.showErrorMessage}
         toggleSuccessMessage={this.toggleSuccessMessage}
+        toggleErrorMessage={this.toggleErrorMessage}
         successMessage={this.state.successMessage}
+        errorMessage={this.state.errorMessage}
+        showSpinner={this.state.showSpinner}
       />
     );
   }

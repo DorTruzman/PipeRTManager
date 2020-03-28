@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import RoutineFormView from "./routine-form-view";
-import ServerConfig from "../../config/server";
 import ServerUtils from "../../utils/ServerUtils";
 
 export class RoutineFormContainer extends Component {
@@ -8,7 +7,6 @@ export class RoutineFormContainer extends Component {
     super(props);
 
     this.state = {
-      componentName: null,
       routineParams: {},
       notFilledFields: [],
       parametersInput: {}

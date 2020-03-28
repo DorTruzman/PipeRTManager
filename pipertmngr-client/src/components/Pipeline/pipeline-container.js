@@ -40,7 +40,11 @@ export class PipelineContainer extends Component {
         redisOut: null
       };
 
-    if (!componentData.routines || !Array.isArray(componentData.routines)) {
+    if (
+      !componentData.routines ||
+      !Array.isArray(componentData.routines) ||
+      componentData.routines.length === 0
+    ) {
       return {
         streamKeys,
         redisKeys

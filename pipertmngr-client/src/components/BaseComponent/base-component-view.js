@@ -1,9 +1,8 @@
 import ReactResizeDetector from "react-resize-detector";
-import React, { useEffect, createRef } from "react";
+import React, { Component } from "react";
 import clsx from "clsx";
 import {
-  makeStyles,
-  useTheme,
+  withStyles,
   Card,
   Grid,
   CardContent,
@@ -14,9 +13,8 @@ import { Delete } from "@material-ui/icons";
 import "./base-component-style.css";
 import "jsplumb/css/jsplumbtoolkit-defaults.css";
 import jsplumb from "jsplumb";
-const jsPlumbIn = jsplumb.jsPlumb;
 
-const useStyles = makeStyles(theme => ({
+const styles = () => ({
   gridItem: {
     marginBottom: "1.5em",
     cursor: "initial"
@@ -43,37 +41,41 @@ const useStyles = makeStyles(theme => ({
   thinText: {
     fontFamily: "Roboto Thin"
   }
-}));
+});
 
-export default function BaseComponentView(props) {
-  const classes = useStyles();
-  const theme = useTheme();
-  let jsPlumbInstance = jsPlumbIn.getInstance();
+export class BaseComponentView extends Component {
+  constructor(props) {
+    super(props);
 
-  useEffect(() => {
-    if (props.routineList) {
-      jsPlumbInstance.reset();
-      jsPlumbIn.reset();
+    this.state = {};
+  }
 
-      jsPlumbInstance.importDefaults({
+  componentDidUpdate() {
+    if (this.props.routineList) {
+      this.jsPlumbInstance.reset();
+      this.jsPlumbLib.reset();
+      this.jsPlumbInstance.importDefaults({
         Connector: ["Straight"],
         Anchors: ["Right", "LeftMiddle"],
         Overlays: [["Arrow", { location: 1 }]]
       });
 
-      for (let index = 0; index < props.routineList.length; index++) {
-        let currRoutine = props.componentData.name + "_item_" + index;
-        let nextRoutine = props.componentData.name + "_item_" + (index + 1);
-
-        if (props.nodeRefs[currRoutine] && props.nodeRefs[nextRoutine]) {
-          props.linkList.forEach(currLink => {
+      for (let index = 0; index < this.props.routineList.length; index++) {
+        let currRoutine = this.props.componentData.name + "_item_" + index;
+        let nextRoutine =
+          this.props.componentData.name + "_item_" + (index + 1);
+        if (
+          this.props.nodeRefs[currRoutine] &&
+          this.props.nodeRefs[nextRoutine]
+        ) {
+          this.props.linkList.forEach(currLink => {
             if (
               currLink.source === currRoutine &&
               currLink.target === nextRoutine
             ) {
-              jsPlumbInstance.connect({
-                source: props.nodeRefs[currRoutine],
-                target: props.nodeRefs[nextRoutine],
+              this.jsPlumbInstance.connect({
+                source: this.props.nodeRefs[currRoutine].current,
+                target: this.props.nodeRefs[nextRoutine].current,
                 endpoint: "Blank",
                 anchor: "Continuous",
                 overlays: [
@@ -92,72 +94,91 @@ export default function BaseComponentView(props) {
         }
       }
 
-      props.updateRefs();
+      // TODO: Find a cleaner solution
+      setTimeout(() => {
+        this.onResize();
+      }, 200);
     }
+  }
 
-    return () => {
-      jsPlumbIn.reset();
-      jsPlumbInstance.reset();
-    };
-  }, [props.nodeRefs, props.routineList]);
+  componentDidMount() {
+    this.jsPlumbLib = jsplumb.jsPlumb;
+    this.jsPlumbInstance = this.jsPlumbLib.getInstance();
+    window.addEventListener("resize", this.onResize);
+  }
 
-  const onResize = () => {
-    jsPlumbInstance.repaintEverything();
+  componentWillUnmount() {
+    this.jsPlumbLib.reset();
+    this.jsPlumbInstance.reset();
+  }
+
+  onResize = () => {
+    this.jsPlumbInstance.repaintEverything();
   };
 
-  window.addEventListener("resize", onResize);
-
-  const deleteComponent = () => {
-    jsPlumbIn.reset();
-    jsPlumbInstance.reset();
-    props.deleteComponent();
+  deleteComponent = () => {
+    this.jsPlumbLib.reset();
+    this.jsPlumbInstance.reset();
+    this.props.deleteComponent();
   };
 
-  return (
-    <Grid item className={classes.gridItem} xs={4}>
-      <Card
-        className={clsx({
-          [classes.glow]: props.isSelected
-        })}
-      >
-        <CardHeader
-          subheader={
-            <React.Fragment>
-              {props.componentData.name}
-              <Delete
-                onClick={deleteComponent}
-                className={classes.closeButton}
-              ></Delete>
-            </React.Fragment>
-          }
-        />
-        <CardContent
-          onClick={() => props.changeSelected(props.componentData)}
-          className={classes.componentCard}
+  render() {
+    const { classes } = this.props;
+
+    return (
+      <Grid item className={classes.gridItem} xs={4}>
+        <Card
+          className={clsx({
+            [classes.glow]: this.props.isSelected
+          })}
         >
-          {!props.componentData.routines ? (
-            <div className={classes.emptyComponent}>
-              <div>
-                <Typography className={classes.thinText} variant="h5">
-                  IT'S LONELY IN HERE... &#128579;
-                </Typography>
+          <CardHeader
+            subheader={
+              <React.Fragment>
+                {this.props.componentData.name}
+                <Delete
+                  onClick={this.deleteComponent}
+                  className={classes.closeButton}
+                ></Delete>
+              </React.Fragment>
+            }
+          />
+          <CardContent
+            onClick={() => this.props.changeSelected(this.props.componentData)}
+            className={classes.componentCard}
+          >
+            {!this.props.componentData.routines ||
+            (Array.isArray(this.props.componentData.routines) &&
+              this.props.componentData.routines.length === 0) ? (
+              <div className={classes.emptyComponent}>
+                <div>
+                  <Typography className={classes.thinText} variant="h5">
+                    IT'S LONELY IN HERE... &#128579;
+                  </Typography>
+                </div>
+                <div>
+                  <Typography variant="h5">
+                    ADD SOME ROUTINES TO THE MIX!
+                  </Typography>
+                </div>
+                <div>
+                  <Typography variant="subtitle2">(CLICK ME!)</Typography>
+                </div>
               </div>
-              <div>
-                <Typography variant="h5">
-                  ADD SOME ROUTINES TO THE MIX!
-                </Typography>
-              </div>
-              <div>
-                <Typography variant="subtitle2">(CLICK ME!)</Typography>
-              </div>
-            </div>
-          ) : (
-            <ReactResizeDetector handleWidth handleHeight onResize={onResize}>
-              <React.Fragment>{props.children}</React.Fragment>
-            </ReactResizeDetector>
-          )}
-        </CardContent>
-      </Card>
-    </Grid>
-  );
+            ) : (
+              <ReactResizeDetector
+                handleWidth
+                handleHeight
+                onResize={this.onResize}
+              >
+                <React.Fragment>{this.props.children}</React.Fragment>
+              </ReactResizeDetector>
+            )}
+          </CardContent>
+        </Card>
+      </Grid>
+    );
+  }
 }
+
+export default withStyles(styles)(BaseComponentView);

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { makeStyles, useTheme, Grid, Typography } from "@material-ui/core";
 import BaseComponentContainer from "../BaseComponent";
 
@@ -24,7 +24,7 @@ export default function PipelineView(props) {
   const classes = useStyles();
   const theme = useTheme();
 
-  const getIOArrow = (IOData, isInput) => {
+  const getIOArrow = (IOData, isInput, noRedis) => {
     if (!IOData || !IOData.redisKeys || !IOData.streamKeys) {
       return null;
     }
@@ -70,46 +70,79 @@ export default function PipelineView(props) {
       }
     }
 
-    return (
-      <React.Fragment>
-        <Grid item>
-          <div className={classes.arrowMargin}>
-            <Typography variant="subtitle2">
-              <b>TYPE:</b> {IOTypes.join(", ")}
-            </Typography>
-            <div>
-              <img className={classes.arrow} src="./images/arrow.png"></img>
-            </div>
-            <Typography variant="subtitle2">
-              <b>KEY:</b> {IOKeys.join(", ")}
-            </Typography>
-          </div>
-        </Grid>
-        {!isInput && IOTypes.includes("REDIS") && (
+    return {
+      hasRedis: IOTypes.includes("REDIS"),
+      html: (
+        <React.Fragment>
+          {isInput && IOTypes.includes("REDIS") && !noRedis && (
+            <Grid item tag="redis">
+              <img
+                src="./images/redisLogo.png"
+                className={classes.redisLogo}
+              ></img>
+            </Grid>
+          )}
           <Grid item>
-            <img
-              src="./images/redisLogo.png"
-              className={classes.redisLogo}
-            ></img>
+            <div className={classes.arrowMargin}>
+              <Typography variant="subtitle2">
+                <b>TYPE:</b> {IOTypes.join(", ")}
+              </Typography>
+              <div>
+                <img className={classes.arrow} src="./images/arrow.png"></img>
+              </div>
+              <Typography variant="subtitle2">
+                <b>KEY:</b> {IOKeys.join(", ")}
+              </Typography>
+            </div>
           </Grid>
-        )}
-      </React.Fragment>
-    );
+          {!isInput && IOTypes.includes("REDIS") && (
+            <Grid item tag="redis">
+              <img
+                src="./images/redisLogo.png"
+                className={classes.redisLogo}
+              ></img>
+            </Grid>
+          )}
+        </React.Fragment>
+      )
+    };
   };
 
-  const makeComponents = components => {
+  const composeComponentsDOM = components => {
+    let redisExistence = new Array(components.length).fill(false);
+
     return components.map(function(comp, index) {
+      if (!comp.routines) {
+        comp.routines = [];
+      }
+
       let IOData = props.getComponentIO(components[index]);
+      let prefixArrow = null;
+
+      if (index > 0 && redisExistence[index - 1]) {
+        prefixArrow = getIOArrow(IOData, true, true);
+      } else {
+        prefixArrow = getIOArrow(IOData, true);
+      }
+
+      prefixArrow = prefixArrow && prefixArrow.html;
+
+      let suffixArrow = getIOArrow(IOData, false);
+      if (suffixArrow) {
+        redisExistence[index] = suffixArrow.hasRedis;
+      }
+
+      suffixArrow = suffixArrow && suffixArrow.html;
 
       return (
         <React.Fragment key={"Comp" + index}>
-          {getIOArrow(IOData, true)}
+          {prefixArrow}
           <BaseComponentContainer
             changeSelected={props.changeSelectedComponent}
             componentData={comp}
             deleteComponent={props.deleteComponent}
           />
-          {getIOArrow(IOData, false)}
+          {suffixArrow}
         </React.Fragment>
       );
     });
@@ -117,7 +150,7 @@ export default function PipelineView(props) {
 
   return (
     <Grid container spacing={1}>
-      {makeComponents(props.components)}
+      {composeComponentsDOM(props.components)}
     </Grid>
   );
 }

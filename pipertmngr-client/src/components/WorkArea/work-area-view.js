@@ -6,13 +6,21 @@ import {
   Typography,
   Grid,
   Link,
-  Snackbar
+  Snackbar,
+  CircularProgress
 } from "@material-ui/core";
 import MuiAlert from "@material-ui/lab/Alert";
 import { Add, Done, Clear, FileCopy } from "@material-ui/icons";
 import ComponentFormContainer from "../ComponentForm";
 import PipelineContainer from "../Pipeline";
 import PipelineFormContainer from "../PipelineForm";
+
+const loadingPhrases = [
+  "GIVING IT A TRY",
+  "TRYING MY BEST",
+  "HOLD ON TIGHT",
+  "JUST A SECOND"
+];
 
 export default function WorkAreaView(props) {
   const useStyles = makeStyles(theme => ({
@@ -59,6 +67,12 @@ export default function WorkAreaView(props) {
       right: theme.spacing(2),
       backgroundColor: "#81c784"
     },
+    spinner: {
+      textAlign: "center",
+      position: "absolute",
+      bottom: theme.spacing(25),
+      right: theme.spacing(11)
+    },
     credits: {
       position: "absolute",
       bottom: theme.spacing(1),
@@ -97,6 +111,21 @@ export default function WorkAreaView(props) {
           </b>
         </MuiAlert>
       </Snackbar>
+      <Snackbar
+        open={props.showErrorMessage}
+        autoHideDuration={6000}
+        onClose={props.toggleErrorMessage}
+      >
+        <MuiAlert variant="filled" severity="error">
+          <b>
+            PIPELINE COULD NOT BE{" "}
+            {props.errorMessage ? props.errorMessage : "SAVED"}
+            {" 😔 "}
+            PLEASE TRY AGAIN LATER.
+          </b>
+        </MuiAlert>
+      </Snackbar>
+
       {props.components.length === 0 ? (
         <div>
           <Grid
@@ -192,6 +221,18 @@ export default function WorkAreaView(props) {
         <Done />
         SAVE
       </Fab>
+      {props.showSpinner && (
+        <div className={classes.spinner}>
+          <CircularProgress size="1.5rem" />
+          <Typography variant="subtitle1">
+            <b>
+              {loadingPhrases[
+                Math.floor(Math.random() * loadingPhrases.length)
+              ] + "..."}
+            </b>
+          </Typography>
+        </div>
+      )}
       <Typography className={classes.credits}>
         PipeRT © 2020&nbsp;
         <Link href="https://github.com/ItamarWilf/PipeRT">

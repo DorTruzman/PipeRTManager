@@ -79,12 +79,13 @@ const ComponentUtils = {
     }
 
     for (let i = 0; i < component.routines.length; i++) {
-      let currentParams = Object.keys(component.routines[i].params);
+      let currentRoutine = component.routines[i];
+      let currentParams = Object.keys(currentRoutine.params);
       for (let j = 0; j < currentParams.length; j++) {
         if (currentParams[j] === ServerConfig.QUEUE_READ) {
-          queues.QueueIn.push(component.routines[i].params[currentParams[j]]);
+          queues.QueueIn.push(currentRoutine.params[currentParams[j]]);
         } else if (currentParams[j] === ServerConfig.QUEUE_SEND) {
-          queues.QueueOut.push(component.routines[i].params[currentParams[j]]);
+          queues.QueueOut.push(currentRoutine.params[currentParams[j]]);
         }
       }
     }

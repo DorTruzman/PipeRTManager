@@ -1,6 +1,9 @@
 import ServerConfig from "../config/server";
 
 const ServerUtils = {
+  isAlive: async () => {
+    return fetch(ServerConfig.SERVER_URL + ServerConfig.ROUTE_IS_ALIVE);
+  },
   getRoutineParams: async routineName => {
     const routineParams = await fetch(
       ServerConfig.SERVER_URL +

@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import SideBarView from "./side-bar-view";
-import ServerConfig from "../../config/server";
 import ServerUtils from "../../utils/ServerUtils";
 
 export class SideBarContainer extends Component {

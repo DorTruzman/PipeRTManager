@@ -1,4 +1,4 @@
-import React, { Component, useRef } from "react";
+import React, { Component } from "react";
 import { BrowserRouter, Route, Switch, Redirect, Link } from "react-router-dom";
 import TopBarContainer from "../TopBar";
 import SideBarContainer from "../Sidebar";

@@ -2,11 +2,15 @@ var express = require("express");
 var router = express.Router();
 
 /* GET home page. */
-router.get("/", function(req, res, next) {
-  res.send("Index");
+router.get("/", function(req, res) {
+  res.send("Demo Pipeline Server Index");
 });
 
-router.get("/routines", function(req, res, next) {
+router.get("/isAlive", function(req, res) {
+  res.status(200).send();
+});
+
+router.get("/routines", function(req, res) {
   const routines = {
     routines: [
       {
@@ -34,15 +38,15 @@ router.get("/routines", function(req, res, next) {
   res.json(routines);
 });
 
-router.post("/pipeline", function(req, res, next) {
+router.post("/pipeline", function(req, res) {
   res.json(req.body);
 });
 
-router.put("/kill", function(req, res, next) {
+router.put("/kill", function(req, res) {
   res.status(200).send();
 });
 
-router.get("/routineParams/:routineName", function(req, res, next) {
+router.get("/routineParams/:routineName", function(req, res) {
   const routines = {
     MessageFromRedis: {
       name: "String",

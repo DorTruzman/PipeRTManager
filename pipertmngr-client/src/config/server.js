@@ -1,11 +1,11 @@
-const SERVER_PORT = process.env.REST_API_PORT
-  ? process.env.REST_API_PORT
-  : "3000";
-
 export default {
-  SERVER_URL: process.env.REST_API_URL
-    ? process.env.REST_API_URL
-    : "http://" + window.location.hostname + ":" + SERVER_PORT,
+  SERVER_URL:
+    (process.env.REST_API_URL
+      ? process.env.REST_API_URL
+      : "http://" + window.location.hostname) +
+    ":" +
+    (process.env.REST_API_PORT ? process.env.REST_API_PORT : "3000"),
+  ROUTE_IS_ALIVE: "/isAlive",
   ROUTE_GET_ROUTINES: "/routines",
   ROUTE_GET_ROUTINE_PARAMS: "/routineParams",
   ROUTE_SAVE_PIPELINE: "/pipeline",
