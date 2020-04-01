@@ -186,7 +186,6 @@ export default function WorkAreaView(props) {
         <b>PIPELINE OPTIONS:</b>
       </div>
       <Fab
-        disabled={!localStorage.getItem("lastPipeline")}
         onClick={() => props.togglePipelineForm()}
         className={classes.loadFab}
         size="large"
