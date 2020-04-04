@@ -2,6 +2,17 @@
 
 All notable changes to the Pipeline Manager UI project will be documented in this file.
 
+## [0.2.1] - 2020-04-05
+
+### Added
+
+- "bump-version.sh" script
+
+### Fixed
+
+- Formatting on all files (using "prettier")
+- Version order on this file (CHANGELOG.md)
+
 ## [0.2.0] - 2020-04-04
 
 ### Added
