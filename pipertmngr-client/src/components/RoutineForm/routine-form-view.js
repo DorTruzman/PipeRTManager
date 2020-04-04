@@ -58,36 +58,23 @@ export default function RoutineFormView(props) {
       props.selectedComponent
     );
 
-    let redisQueue = ComponentUtils.getRedisTypes(props.components);
+    let { RedisIn, RedisOut } = ComponentUtils.getRedisTypes(props.components);
+    //Concat the in and out arrays and delete duplicate in redis queue array.
+    let redisQueue = RedisIn.concat(RedisOut);
+    let uniqueSet = new Set(redisQueue);
+    redisQueue = [...uniqueSet];
 
     return Object.keys(props.routineParams).map(function (param) {
       if (
         param === ServerConfig.REDIS_SEND ||
-        param === ServerConfig.REDIS_READ
-      ) {
-        return (
-          <div className={classes.genericInput}>
-            <SingleSelect
-              fullWidth={false}
-              onChange={(value) => props.setSelectState(value, param)}
-              className={`${classes.materialSelect} ${classes.selectMargin}`}
-              label={param}
-              SelectProps={{
-                isClearable: true,
-                isCreatable: true,
-                msgNoOptionsAvailable:
-                  "No queues available. Type new queue name...",
-                msgNoOptionsMatchFilter: "No queue matches your query.",
-              }}
-              options={redisQueue}
-            ></SingleSelect>
-          </div>
-        );
-      }
-      if (
+        param === ServerConfig.REDIS_READ ||
         param === ServerConfig.QUEUE_READ ||
         param === ServerConfig.QUEUE_SEND
       ) {
+        var isRedisQueue =
+          param === ServerConfig.REDIS_SEND || param === ServerConfig.REDIS_READ
+            ? true
+            : false;
         return (
           <div className={classes.genericInput}>
             <SingleSelect
@@ -102,11 +89,18 @@ export default function RoutineFormView(props) {
                   "No queues available. Type new queue name...",
                 msgNoOptionsMatchFilter: "No queue matches your query.",
               }}
-              options={param === ServerConfig.QUEUE_READ ? QueueOut : QueueIn}
+              options={
+                isRedisQueue
+                  ? redisQueue
+                  : param === ServerConfig.QUEUE_READ
+                  ? QueueOut
+                  : QueueIn
+              }
             ></SingleSelect>
           </div>
         );
       }
+
       if (props.routineParams[param] === ServerConfig.DataTypes.Integer) {
         return (
           <div className={classes.genericInput}>

@@ -1,12 +1,4 @@
 import ServerConfig from "../config/server";
-import ServerUtils from "./ServerUtils";
-
-Array.prototype.asyncForEach = async function (callback, thisArg) {
-  thisArg = thisArg || this;
-  for (let i = 0, l = this.length; i !== l; ++i) {
-    await callback.call(thisArg, this[i], i, this);
-  }
-};
 
 const ComponentUtils = {
   createComponent: (components, newComponentName) => {
@@ -102,7 +94,7 @@ const ComponentUtils = {
   },
 
   getRedisTypes: (components) => {
-    var queue = [];
+    var queue = { RedisIn: [], RedisOut: [] };
 
     if (!components) {
       return queue;
@@ -114,11 +106,10 @@ const ComponentUtils = {
         for (let j = 0; j < comRoutines.length; j++) {
           let params = Object.keys(comRoutines[j].params);
           for (let k = 0; k < params.length; k++) {
-            if (
-              params[k] === ServerConfig.REDIS_READ ||
-              params[k] === ServerConfig.REDIS_SEND
-            ) {
-              queue.push(comRoutines[j].params[params[k]]);
+            if (params[k] === ServerConfig.REDIS_READ) {
+              queue.RedisIn.push(comRoutines[j].params[params[k]]);
+            } else if (params[k] === ServerConfig.REDIS_SEND) {
+              queue.RedisOut.push(comRoutines[j].params[params[k]]);
             }
           }
         }

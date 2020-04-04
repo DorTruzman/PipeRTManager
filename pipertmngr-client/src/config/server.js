@@ -17,8 +17,10 @@ export default {
   DataTypes: {
     Integer: "Integer",
     String: "String",
-    QueueRead: "QueueRead",
-    QueueSend: "QueueSend",
+    QueueRead: "QueueIn",
+    QueueSend: "QueueOut",
+    RedisRead: "RedisIn",
+    RedisSend: "RedisOut",
   },
   RoutineTypes: {
     HasToBeFirst: 0,
