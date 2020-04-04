@@ -60,9 +60,7 @@ export default function RoutineFormView(props) {
 
     let { RedisIn, RedisOut } = ComponentUtils.getRedisTypes(props.components);
     //Concat the in and out arrays and delete duplicate in redis queue array.
-    let redisQueue = RedisIn.concat(RedisOut);
-    let uniqueSet = new Set(redisQueue);
-    redisQueue = [...uniqueSet];
+    let redisQueue = [...new Set([...RedisIn, ...RedisOut])];
 
     return Object.keys(props.routineParams).map(function (param) {
       if (
@@ -72,9 +70,8 @@ export default function RoutineFormView(props) {
         param === ServerConfig.QUEUE_SEND
       ) {
         var isRedisQueue =
-          param === ServerConfig.REDIS_SEND || param === ServerConfig.REDIS_READ
-            ? true
-            : false;
+          param === ServerConfig.REDIS_SEND ||
+          param === ServerConfig.REDIS_READ;
         return (
           <div className={classes.genericInput}>
             <SingleSelect
