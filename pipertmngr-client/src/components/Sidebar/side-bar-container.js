@@ -10,7 +10,7 @@ export class SideBarContainer extends Component {
     this.state = {
       routinesList: [],
       displayRoutineForm: false,
-      isComponentSelected: true,
+      isComponentSelected: true
     };
 
     this.getAllRoutines();
@@ -19,17 +19,17 @@ export class SideBarContainer extends Component {
   toggleRoutineForm = (routineData, toggleState) => {
     if (!toggleState) {
       this.setState({
-        displayRoutineForm: false,
+        displayRoutineForm: false
       });
     } else if (this.props.isComponentSelected) {
       this.setState({
         isComponentSelected: true,
         displayRoutineForm: true,
-        routineData: routineData,
+        routineData: routineData
       });
     } else {
       this.setState({
-        isComponentSelected: false,
+        isComponentSelected: false
       });
     }
   };
@@ -37,7 +37,7 @@ export class SideBarContainer extends Component {
   getAllRoutines = async () => {
     const routinesList = await ServerUtils.getRoutines();
     this.setState({
-      routinesList,
+      routinesList
     });
   };
 

@@ -12,7 +12,7 @@ import {
   Typography,
   Input,
   Menu,
-  MenuItem,
+  MenuItem
 } from "@material-ui/core";
 import { Done, Clear } from "@material-ui/icons";
 import ComponentUtils from "../../utils/ComponentUtils";
@@ -20,35 +20,35 @@ import ServerConfig from "../../config/server";
 import { SingleSelect } from "react-select-material-ui";
 
 export default function RoutineFormView(props) {
-  const useStyles = makeStyles((theme) => ({
+  const useStyles = makeStyles(theme => ({
     materialSelect: {
       width: 240,
       fontFamily: "Roboto, Arial",
-      fontSize: "16px",
+      fontSize: "16px"
     },
     genericInput: {
-      marginBottom: "1rem",
+      marginBottom: "1rem"
     },
     numberInput: {
-      marginTop: "16px",
+      marginTop: "16px"
     },
     dialogTitle: {
       borderBottomColor: "black",
       borderBottomStyle: "solid",
-      borderBottomWidth: "0.01rem",
+      borderBottomWidth: "0.01rem"
     },
     dialog: {
       backgroundImage: "url(./images/formImage.jpg)",
       backgroundSize: "cover",
       minHeight: "30rem",
-      overflowY: "auto",
+      overflowY: "auto"
     },
     dialogActions: {
       borderTopColor: "black",
       borderTopStyle: "solid",
       borderTopWidth: "0.01rem",
-      background: "linear-gradient(90deg, #b2b2b2 0%, white 40%, white 70%)",
-    },
+      background: "linear-gradient(90deg, #b2b2b2 0%, white 40%, white 70%)"
+    }
   }));
 
   const classes = useStyles();
@@ -62,7 +62,7 @@ export default function RoutineFormView(props) {
     //Concat the in and out arrays and delete duplicate in redis queue array.
     let redisQueue = [...new Set([...RedisIn, ...RedisOut])];
 
-    return Object.keys(props.routineParams).map(function (param) {
+    return Object.keys(props.routineParams).map(function(param) {
       if (
         param === ServerConfig.REDIS_SEND ||
         param === ServerConfig.REDIS_READ ||
@@ -76,7 +76,7 @@ export default function RoutineFormView(props) {
           <div className={classes.genericInput}>
             <SingleSelect
               fullWidth={false}
-              onChange={(value) => props.setSelectState(value, param)}
+              onChange={value => props.setSelectState(value, param)}
               className={`${classes.materialSelect} ${classes.selectMargin}`}
               label={param}
               SelectProps={{
@@ -84,7 +84,7 @@ export default function RoutineFormView(props) {
                 isCreatable: true,
                 msgNoOptionsAvailable:
                   "No queues available. Type new queue name...",
-                msgNoOptionsMatchFilter: "No queue matches your query.",
+                msgNoOptionsMatchFilter: "No queue matches your query."
               }}
               options={
                 isRedisQueue
@@ -104,7 +104,7 @@ export default function RoutineFormView(props) {
             <Input
               className={classes.numberInput}
               type="number"
-              onChange={(e) => props.setInputState(e, param, true)}
+              onChange={e => props.setInputState(e, param, true)}
               placeholder={param}
             ></Input>
           </div>
@@ -114,7 +114,7 @@ export default function RoutineFormView(props) {
       return (
         <div className={classes.genericInput}>
           <TextField
-            onChange={(e) => props.setInputState(e, param)}
+            onChange={e => props.setInputState(e, param)}
             label={param}
           ></TextField>
         </div>
