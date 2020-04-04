@@ -18,10 +18,10 @@ export default {
     Integer: "Integer",
     String: "String",
     QueueRead: "QueueRead",
-    QueueSend: "QueueSend"
+    QueueSend: "QueueSend",
   },
   RoutineTypes: {
     HasToBeFirst: 0,
-    HasToBeLast: 2
-  }
+    HasToBeLast: 2,
+  },
 };
