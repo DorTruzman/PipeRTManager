@@ -11,7 +11,7 @@ import {
   IconButton,
   Divider,
   Typography,
-  Snackbar
+  Snackbar,
 } from "@material-ui/core";
 import { ChevronLeftSharp, InputSharp, CodeSharp } from "@material-ui/icons";
 import MuiAlert from "@material-ui/lab/Alert";
@@ -21,7 +21,7 @@ import ServerConfig from "../../config/server";
 
 export default function SideBarView(props) {
   const sideList = (routes = {}, routinesList) => {
-    const linksJSX = Object.keys(routes).map(function(routeKey, index) {
+    const linksJSX = Object.keys(routes).map(function (routeKey, index) {
       let routeData = routes[routeKey];
       const TagName = routeData.icon;
 
@@ -50,7 +50,7 @@ export default function SideBarView(props) {
         ServerConfig.RoutineTypes.HasToBeLast
       );
 
-      routinesJSX = routinesList.map(function(routineData) {
+      routinesJSX = routinesList.map(function (routineData) {
         let disableRoutine = false;
 
         if (
@@ -75,7 +75,7 @@ export default function SideBarView(props) {
           disabled: disableRoutine,
           onClick: !disableRoutine
             ? () => props.toggleRoutineForm(routineData, true)
-            : undefined
+            : undefined,
         };
 
         return (
@@ -113,45 +113,45 @@ export default function SideBarView(props) {
 
   const sideBarWidth = props.sideBarWidth ? props.sideBarWidth : 240;
 
-  const useStyles = makeStyles(theme => ({
+  const useStyles = makeStyles((theme) => ({
     sideBar: {
       width: sideBarWidth,
-      flexShrink: 0
+      flexShrink: 0,
     },
     sideBarOpen: {
       width: sideBarWidth,
       transition: theme.transitions.create("width", {
         easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.enteringScreen
-      })
+        duration: theme.transitions.duration.enteringScreen,
+      }),
     },
     sideBarClose: {
       overflowX: "hidden",
       width: 0,
       transition: theme.transitions.create("width", {
         easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.leavingScreen
-      })
+        duration: theme.transitions.duration.leavingScreen,
+      }),
     },
     chevronButton: {
-      justifyContent: "flex-start"
+      justifyContent: "flex-start",
     },
     routine: {
       cursor: "pointer",
       "&:hover": {
-        color: "blue"
-      }
+        color: "blue",
+      },
     },
     menuCaption: {
       marginTop: "0.3em",
       fontFamily: "Roboto Thin",
-      textAlign: "center"
+      textAlign: "center",
     },
     credits: {
       marginTop: "75%",
       textAlign: "center",
-      fontStyle: "italic"
-    }
+      fontStyle: "italic",
+    },
   }));
 
   const classes = useStyles();
@@ -161,13 +161,13 @@ export default function SideBarView(props) {
       <Drawer
         className={clsx(classes.drawer, {
           [classes.sideBarOpen]: props.isSideBarOpen,
-          [classes.sideBarClose]: !props.isSideBarOpen
+          [classes.sideBarClose]: !props.isSideBarOpen,
         })}
         classes={{
           paper: clsx({
             [classes.sideBarOpen]: props.isSideBarOpen,
-            [classes.sideBarClose]: !props.isSideBarOpen
-          })
+            [classes.sideBarClose]: !props.isSideBarOpen,
+          }),
         }}
         variant="permanent"
         open={props.isSideBarOpen}
@@ -192,7 +192,9 @@ export default function SideBarView(props) {
           selectedComponent={props.selectedComponent}
           routineData={props.routineData}
           createRoutine={props.createRoutine}
+          listQueueInRoutines={props.queueInRoutine}
           closeRoutineForm={() => props.toggleRoutineForm(null, false)}
+          components={props.components}
         />
       )}
 

@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import SideBarView from "./side-bar-view";
 import ServerUtils from "../../utils/ServerUtils";
+import server from "../../config/server";
 
 export class SideBarContainer extends Component {
   constructor(props) {
@@ -9,7 +10,7 @@ export class SideBarContainer extends Component {
     this.state = {
       routinesList: [],
       displayRoutineForm: false,
-      isComponentSelected: true
+      isComponentSelected: true,
     };
 
     this.getAllRoutines();
@@ -18,17 +19,17 @@ export class SideBarContainer extends Component {
   toggleRoutineForm = (routineData, toggleState) => {
     if (!toggleState) {
       this.setState({
-        displayRoutineForm: false
+        displayRoutineForm: false,
       });
     } else if (this.props.isComponentSelected) {
       this.setState({
         isComponentSelected: true,
         displayRoutineForm: true,
-        routineData: routineData
+        routineData: routineData,
       });
     } else {
       this.setState({
-        isComponentSelected: false
+        isComponentSelected: false,
       });
     }
   };
@@ -36,7 +37,7 @@ export class SideBarContainer extends Component {
   getAllRoutines = async () => {
     const routinesList = await ServerUtils.getRoutines();
     this.setState({
-      routinesList
+      routinesList,
     });
   };
 
@@ -54,6 +55,7 @@ export class SideBarContainer extends Component {
         createRoutine={this.props.createRoutine}
         isComponentSelected={this.state.isComponentSelected}
         selectedComponent={this.props.selectedComponent}
+        components={this.props.components}
       />
     );
   }
