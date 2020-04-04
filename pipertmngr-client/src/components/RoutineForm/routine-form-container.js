@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import RoutineFormView from "./routine-form-view";
 import ServerUtils from "../../utils/ServerUtils";
+import server from "../../config/server";
 
 export class RoutineFormContainer extends Component {
   constructor(props) {
@@ -9,11 +10,11 @@ export class RoutineFormContainer extends Component {
     this.state = {
       routineParams: {},
       notFilledFields: [],
-      parametersInput: {}
+      parametersInput: {},
     };
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this.getParams();
   }
 
@@ -22,7 +23,7 @@ export class RoutineFormContainer extends Component {
     parametersInput[param] = value;
 
     this.setState({
-      parametersInput
+      parametersInput,
     });
   };
 
@@ -33,7 +34,7 @@ export class RoutineFormContainer extends Component {
       : e.target.value;
 
     this.setState({
-      parametersInput
+      parametersInput,
     });
   };
 
@@ -41,7 +42,7 @@ export class RoutineFormContainer extends Component {
     let { parametersInput } = this.state;
     let notFilledFields = [];
 
-    Object.keys(this.state.routineParams).forEach(param => {
+    Object.keys(this.state.routineParams).forEach((param) => {
       if (
         !parametersInput[param] ||
         parametersInput[param].toString().trim() === ""
@@ -55,14 +56,14 @@ export class RoutineFormContainer extends Component {
         routine_type_name: this.props.routineData.name,
         routine_type: this.props.routineData.type,
         params: {
-          ...parametersInput
-        }
+          ...parametersInput,
+        },
       });
 
       this.props.closeRoutineForm();
     } else {
       this.setState({
-        notFilledFields
+        notFilledFields,
       });
     }
   };
@@ -72,7 +73,7 @@ export class RoutineFormContainer extends Component {
       this.props.routineData.name
     );
     this.setState({
-      routineParams
+      routineParams,
     });
   };
 
@@ -88,6 +89,7 @@ export class RoutineFormContainer extends Component {
         notFilledFields={this.state.notFilledFields}
         setInputState={this.setInputState}
         setSelectState={this.setSelectState}
+        components={this.props.components}
       />
     );
   }

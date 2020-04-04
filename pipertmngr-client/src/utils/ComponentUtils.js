@@ -5,20 +5,20 @@ const ComponentUtils = {
     let mutableComponents = [...components];
     let mutableName = newComponentName.toString();
 
-    mutableComponents.forEach(componentData => {
+    mutableComponents.forEach((componentData) => {
       if (mutableName === componentData.name) {
         mutableName = "Copy of " + mutableName;
       }
     });
 
     mutableComponents.push({
-      name: mutableName
+      name: mutableName,
     });
 
     return mutableComponents;
   },
   deleteComponent: (components, nameToDelete) => {
-    return components.filter(currentComponent => {
+    return components.filter((currentComponent) => {
       return currentComponent.name !== nameToDelete;
     });
   },
@@ -42,7 +42,7 @@ const ComponentUtils = {
 
     return {
       components: mutableComponents,
-      updatedComponent
+      updatedComponent,
     };
   },
   checkForRoutine: (component, routineTypeName) => {
@@ -71,7 +71,7 @@ const ComponentUtils = {
 
     return false;
   },
-  getAllComponentQueues: component => {
+  getAllComponentQueues: (component) => {
     let queues = { QueueIn: [], QueueOut: [] };
 
     if (!component || !component.routines) {
@@ -91,7 +91,33 @@ const ComponentUtils = {
     }
 
     return queues;
-  }
+  },
+
+  getRedisTypes: (components) => {
+    var queue = { RedisIn: [], RedisOut: [] };
+
+    if (!components) {
+      return queue;
+    }
+
+    for (let i = 0; i < components.length; i++) {
+      let comRoutines = components[i].routines;
+      if (comRoutines) {
+        for (let j = 0; j < comRoutines.length; j++) {
+          let params = Object.keys(comRoutines[j].params);
+          for (let k = 0; k < params.length; k++) {
+            if (params[k] === ServerConfig.REDIS_READ) {
+              queue.RedisIn.push(comRoutines[j].params[params[k]]);
+            } else if (params[k] === ServerConfig.REDIS_SEND) {
+              queue.RedisOut.push(comRoutines[j].params[params[k]]);
+            }
+          }
+        }
+      }
+    }
+
+    return queue;
+  },
 };
 
 export default ComponentUtils;
