@@ -2,6 +2,12 @@
 
 All notable changes to the Pipeline Manager UI project will be documented in this file.
 
+## [0.2.2] - 2020-04-06
+
+### Changed
+
+- Styling for the "Browse File" dialog in the "Load-A-Pipeline" form
+
 ## [0.2.1] - 2020-04-05
 
 ### Added
@@ -40,3 +46,4 @@ All notable changes to the Pipeline Manager UI project will be documented in thi
 	- Responsive routines & connections (queues)
 - Mock NodeJS server as a part of the docker-compose
 - Production ready docker-compose file, Dockerfiles (Prod. + Dev.) for the client and a Prod. Dockerfile for the mock server
+
