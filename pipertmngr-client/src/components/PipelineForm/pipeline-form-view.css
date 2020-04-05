@@ -10,7 +10,6 @@
 .inputFile + label {
   color: black;
   display: inline-block;
-  cursor: pointer;
   padding: 10px;
   border-radius: 5px;
 }
