@@ -8,35 +8,48 @@ import {
   Button,
   makeStyles,
   Input,
-  Grid
+  Grid,
 } from "@material-ui/core";
-import { Done, Clear } from "@material-ui/icons";
+import { Done, Clear, Label } from "@material-ui/icons";
+import "./pipeline-form-view.css";
 
 export default function RoutineFormView(props) {
-  const useStyles = makeStyles(theme => ({
+  const useStyles = makeStyles((theme) => ({
     yamlBrowse: {
-      marginTop: "1em"
+      marginTop: "1em",
+      width: "0.1px",
+      height: "0.1px",
+      opacity: "0",
+      overflow: "hidden",
+      position: "absolute",
+      zIndex: "-1",
     },
     cachedButton: {
-      fontSize: "1.5em"
+      fontSize: "1.5em",
     },
     yamlButton: {
-      marginLeft: "1.5em"
+      marginLeft: "1.5em",
     },
     dialogTitle: {
       borderBottomColor: "black",
       borderBottomStyle: "solid",
-      borderBottomWidth: "0.01rem"
+      borderBottomWidth: "0.01rem",
     },
     dialog: {
-      overflowY: "auto"
+      overflowY: "auto",
     },
     dialogActions: {
       borderTopColor: "black",
       borderTopStyle: "solid",
       borderTopWidth: "0.01rem",
-      background: "linear-gradient(90deg, #b2b2b2 0%, white 40%, white 70%)"
-    }
+      background: "linear-gradient(90deg, #b2b2b2 0%, white 40%, white 70%)",
+    },
+    centerAction: {
+      alignItems: "center",
+      alignSelf: "center",
+      textAlign: "center",
+      justifyContent: "center",
+    },
   }));
 
   const classes = useStyles();
@@ -69,10 +82,11 @@ export default function RoutineFormView(props) {
               LOAD CACHED PIPELINE
             </Button>
           </Grid>
-          <Grid item xs={5}>
+          <Grid item xs={5} className={classes.centerAction}>
             <Button
               size="large"
               className={classes.yamlButton}
+              for="file"
               variant="contained"
               color={props.selectedOption === "YAML" ? "primary" : "inherit"}
               onClick={() => props.changeSelected("YAML")}
@@ -80,14 +94,34 @@ export default function RoutineFormView(props) {
               LOAD .YAML FILE
             </Button>
             <Input
-              className={classes.yamlBrowse}
+              className="inputFile"
               disabled={props.selectedOption !== "YAML"}
               type="file"
+              id="file"
+              name="file"
+              disableUnderline="true"
               onChange={props.onFileChange}
               inputProps={{
-                accept: ".yaml,.yml"
+                accept: ".yaml,.yml",
               }}
             ></Input>
+            <label
+              className="label"
+              for="file"
+              disabled={props.selectedOption !== "YAML"}
+              style={{
+                color: props.selectedOption === "YAML" ? "#000000" : "#dcdcdc",
+                cursor: props.selectedOption === "YAML" ? "pointer" : "defualt",
+              }}
+            >
+              {props.chosenFile ? (
+                <React.Fragment>
+                  <b>Selected:</b> {props.chosenFile.name}
+                </React.Fragment>
+              ) : (
+                <b>Browse...</b>
+              )}
+            </label>
           </Grid>
         </Grid>
       </DialogContent>
