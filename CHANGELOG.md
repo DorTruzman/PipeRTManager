@@ -2,6 +2,29 @@
 
 All notable changes to the Pipeline Manager UI project will be documented in this file.
 
+## [0.2.1] - 2020-04-05
+
+### Added
+
+- "bump-version.sh" script
+
+### Fixed
+
+- Formatting on all files (using "prettier")
+- Version order on this file (CHANGELOG.md)
+
+## [0.2.0] - 2020-04-04
+
+### Added
+
+- Redis queues drop down list in "Create-A-Routine" form
+
+## [0.1.1] - 2020-04-01
+
+### Fixed
+
+- A bug where the "Load" button was disabled until a pipeline was saved into the cache
+
 ## [0.1.0] - 2020-03-28
 
 ### Added
@@ -17,15 +40,3 @@ All notable changes to the Pipeline Manager UI project will be documented in thi
 	- Responsive routines & connections (queues)
 - Mock NodeJS server as a part of the docker-compose
 - Production ready docker-compose file, Dockerfiles (Prod. + Dev.) for the client and a Prod. Dockerfile for the mock server
-
-## [0.1.1] - 2020-04-01
-
-### Fixed
-
-- Fix a bug where the "Load" button was disabled until a pipeline was saved into the cache
-
-## [0.2.0] - 2020-04-04
-
-### Added
-
-- Redis queues drop down list in "Create-A-Routine" form.

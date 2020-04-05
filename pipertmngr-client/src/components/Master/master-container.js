@@ -5,7 +5,7 @@ import SideBarContainer from "../Sidebar";
 import {
   createMuiTheme,
   ThemeProvider,
-  StylesProvider,
+  StylesProvider
 } from "@material-ui/core/styles";
 import { CssBaseline } from "@material-ui/core";
 import RoutesConfig from "../../config/routes";
@@ -14,22 +14,22 @@ import ComponentUtils from "../../utils/ComponentUtils";
 const theme = createMuiTheme({
   palette: {
     primary: {
-      main: "#2296f3",
-    },
+      main: "#2296f3"
+    }
   },
   typography: {
-    fontFamily: "Roboto, Arial",
+    fontFamily: "Roboto, Arial"
   },
   overrides: {
     MuiCssBaseline: {
       "@global": {
         body: {
           backgroundImage: "url(./images/backgroundImage.jpg)",
-          backgroundSize: "cover",
-        },
-      },
-    },
-  },
+          backgroundSize: "cover"
+        }
+      }
+    }
+  }
 });
 
 export class MasterContainer extends Component {
@@ -41,30 +41,30 @@ export class MasterContainer extends Component {
       showComponentForm: false,
       selectedComponent: null,
       isSideBarOpen: false,
-      isComponentSelected: false,
+      isComponentSelected: false
     };
   }
 
-  setPipeline = (pipeline) => {
+  setPipeline = pipeline => {
     this.setState({
-      components: pipeline,
+      components: pipeline
     });
   };
 
-  createComponent = (name) => {
+  createComponent = name => {
     this.setState({
-      components: ComponentUtils.createComponent(this.state.components, name),
+      components: ComponentUtils.createComponent(this.state.components, name)
     });
 
     this.toggleComponentForm(false);
   };
 
-  deleteComponent = (componentData) => {
+  deleteComponent = componentData => {
     this.setState({
       components: ComponentUtils.deleteComponent(
         this.state.components,
         componentData.name
-      ),
+      )
     });
 
     if (
@@ -75,35 +75,35 @@ export class MasterContainer extends Component {
     }
   };
 
-  changeSelectedComponent = (componentData) => {
+  changeSelectedComponent = componentData => {
     if (componentData && componentData.name) {
       this.setState({
-        selectedComponent: componentData,
+        selectedComponent: componentData
       });
 
       this.setComponentSelectedState(true);
     } else {
       this.setState({
-        selectedComponent: null,
+        selectedComponent: null
       });
 
       this.setComponentSelectedState(false);
     }
   };
 
-  setComponentSelectedState = (stateToSet) => {
+  setComponentSelectedState = stateToSet => {
     this.setState({
-      isComponentSelected: stateToSet,
+      isComponentSelected: stateToSet
     });
   };
 
-  toggleComponentForm = (toggleMode) => {
+  toggleComponentForm = toggleMode => {
     this.setState({
-      showComponentForm: toggleMode,
+      showComponentForm: toggleMode
     });
   };
 
-  createRoutine = (routineWithParams) => {
+  createRoutine = routineWithParams => {
     let { components, updatedComponent } = ComponentUtils.createRoutine(
       this.state.components,
       this.state.selectedComponent.name,
@@ -111,7 +111,7 @@ export class MasterContainer extends Component {
     );
 
     this.setState({
-      components,
+      components
     });
 
     this.changeSelectedComponent(updatedComponent);
@@ -119,13 +119,13 @@ export class MasterContainer extends Component {
 
   toggleSideBar = () => {
     this.setState({
-      isSideBarOpen: !this.state.isSideBarOpen,
+      isSideBarOpen: !this.state.isSideBarOpen
     });
   };
 
   createRoutes = (routes = {}) => {
     return Object.keys(routes).map(
-      function (routeKey) {
+      function(routeKey) {
         let routeData = routes[routeKey];
         let TagName = routeData.component;
 

@@ -20,10 +20,10 @@ export default {
     QueueRead: "QueueIn",
     QueueSend: "QueueOut",
     RedisRead: "RedisIn",
-    RedisSend: "RedisOut",
+    RedisSend: "RedisOut"
   },
   RoutineTypes: {
     HasToBeFirst: 0,
-    HasToBeLast: 2,
-  },
+    HasToBeLast: 2
+  }
 };

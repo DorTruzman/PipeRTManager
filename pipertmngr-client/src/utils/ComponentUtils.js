@@ -5,20 +5,20 @@ const ComponentUtils = {
     let mutableComponents = [...components];
     let mutableName = newComponentName.toString();
 
-    mutableComponents.forEach((componentData) => {
+    mutableComponents.forEach(componentData => {
       if (mutableName === componentData.name) {
         mutableName = "Copy of " + mutableName;
       }
     });
 
     mutableComponents.push({
-      name: mutableName,
+      name: mutableName
     });
 
     return mutableComponents;
   },
   deleteComponent: (components, nameToDelete) => {
-    return components.filter((currentComponent) => {
+    return components.filter(currentComponent => {
       return currentComponent.name !== nameToDelete;
     });
   },
@@ -42,7 +42,7 @@ const ComponentUtils = {
 
     return {
       components: mutableComponents,
-      updatedComponent,
+      updatedComponent
     };
   },
   checkForRoutine: (component, routineTypeName) => {
@@ -71,7 +71,7 @@ const ComponentUtils = {
 
     return false;
   },
-  getAllComponentQueues: (component) => {
+  getAllComponentQueues: component => {
     let queues = { QueueIn: [], QueueOut: [] };
 
     if (!component || !component.routines) {
@@ -93,7 +93,7 @@ const ComponentUtils = {
     return queues;
   },
 
-  getRedisTypes: (components) => {
+  getRedisTypes: components => {
     var queue = { RedisIn: [], RedisOut: [] };
 
     if (!components) {
@@ -117,7 +117,7 @@ const ComponentUtils = {
     }
 
     return queue;
-  },
+  }
 };
 
 export default ComponentUtils;

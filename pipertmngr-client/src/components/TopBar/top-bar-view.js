@@ -80,7 +80,7 @@ export default function TopBarView(props) {
           </IconButton>
           <img className={classes.pipelinePic} src="/images/pipeline.png"></img>
           &nbsp;&nbsp;&nbsp;
-          <Grid justify="space-between" container spacing={10}>
+          <Grid justify="space-between" container>
             <Grid item>
               <Typography variant="h4">PIPELINE MANAGER</Typography>
             </Grid>
