@@ -46,4 +46,3 @@ All notable changes to the Pipeline Manager UI project will be documented in thi
 	- Responsive routines & connections (queues)
 - Mock NodeJS server as a part of the docker-compose
 - Production ready docker-compose file, Dockerfiles (Prod. + Dev.) for the client and a Prod. Dockerfile for the mock server
-
