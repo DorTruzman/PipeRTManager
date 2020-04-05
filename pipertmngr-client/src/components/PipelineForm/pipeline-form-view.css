@@ -1,0 +1,16 @@
+.inputFile {
+  width: 0.1px;
+  height: 0.1 px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  z-index: -1;
+}
+
+.inputFile + label {
+  color: black;
+  display: inline-block;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 5px;
+}
