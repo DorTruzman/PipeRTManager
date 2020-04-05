@@ -106,7 +106,11 @@ export default function RoutineFormView(props) {
                 accept: ".yaml,.yml",
               }}
             ></Input>
-            <label className="label" for="file">
+            <label
+              className="label"
+              for="file"
+              disabled={props.selectedOption !== "YAML"}
+            >
               {props.chosenFile
                 ? "Selected: " + props.chosenFile.name
                 : "Browse .."}
