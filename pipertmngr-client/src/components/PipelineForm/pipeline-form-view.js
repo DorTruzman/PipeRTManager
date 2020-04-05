@@ -11,7 +11,11 @@ import {
   Grid,
 } from "@material-ui/core";
 import { Done, Clear, Label } from "@material-ui/icons";
+<<<<<<< HEAD
 import "./pipeline-form-view.css";
+=======
+import "./pipeline-form-style.css";
+>>>>>>> 6946b5a00095bd494cae8da1ec710578d904063a
 
 export default function RoutineFormView(props) {
   const useStyles = makeStyles((theme) => ({
@@ -115,9 +119,13 @@ export default function RoutineFormView(props) {
                 cursor: props.selectedOption === "YAML" ? "pointer" : "defualt",
               }}
             >
-              {props.chosenFile
-                ? "Selected: " + props.chosenFile.name
-                : "Browse .."}
+              {props.chosenFile ? (
+                <React.Fragment>
+                  <b>Selected:</b> {props.chosenFile.name}
+                </React.Fragment>
+              ) : (
+                <b>Browse...</b>
+              )}
             </label>
           </Grid>
         </Grid>
