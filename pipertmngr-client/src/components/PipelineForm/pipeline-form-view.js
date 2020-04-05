@@ -109,11 +109,10 @@ export default function RoutineFormView(props) {
             <label
               className="label"
               for="file"
-              color="inheret"
               disabled={props.selectedOption !== "YAML"}
               style={{
-                cursor:
-                  props.selectedOption === "YAML" ? "pointer" : "not-allowed",
+                color: props.selectedOption === "YAML" ? "#000000" : "#dcdcdc",
+                cursor: props.selectedOption === "YAML" ? "pointer" : "defualt",
               }}
             >
               {props.chosenFile
