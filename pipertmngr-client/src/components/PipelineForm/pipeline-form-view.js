@@ -24,7 +24,6 @@ export default function RoutineFormView(props) {
       position: "absolute",
       zIndex: "-1",
     },
-
     cachedButton: {
       fontSize: "1.5em",
     },
@@ -115,9 +114,13 @@ export default function RoutineFormView(props) {
                 cursor: props.selectedOption === "YAML" ? "pointer" : "defualt",
               }}
             >
-              {props.chosenFile
-                ? "Selected: " + props.chosenFile.name
-                : "Browse .."}
+              {props.chosenFile ? (
+                <React.Fragment>
+                  <b>Selected:</b> {props.chosenFile.name}
+                </React.Fragment>
+              ) : (
+                <b>Browse...</b>
+              )}
             </label>
           </Grid>
         </Grid>
