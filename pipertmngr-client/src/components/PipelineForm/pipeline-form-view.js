@@ -11,11 +11,7 @@ import {
   Grid,
 } from "@material-ui/core";
 import { Done, Clear, Label } from "@material-ui/icons";
-<<<<<<< HEAD
-import "./pipeline-form-view.css";
-=======
 import "./pipeline-form-style.css";
->>>>>>> 6946b5a00095bd494cae8da1ec710578d904063a
 
 export default function RoutineFormView(props) {
   const useStyles = makeStyles((theme) => ({
