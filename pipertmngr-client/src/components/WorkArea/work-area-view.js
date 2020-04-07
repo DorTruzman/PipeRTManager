@@ -7,7 +7,7 @@ import {
   Grid,
   Link,
   Snackbar,
-  CircularProgress
+  CircularProgress,
 } from "@material-ui/core";
 import MuiAlert from "@material-ui/lab/Alert";
 import { Add, Done, Clear, FileCopy } from "@material-ui/icons";
@@ -19,59 +19,59 @@ const loadingPhrases = [
   "GIVING IT A TRY",
   "TRYING MY BEST",
   "HOLD ON TIGHT",
-  "JUST A SECOND"
+  "JUST A SECOND",
 ];
 
 export default function WorkAreaView(props) {
-  const useStyles = makeStyles(theme => ({
+  const useStyles = makeStyles((theme) => ({
     content: {
       flexGrow: 1,
       transition: theme.transitions.create(["width", "margin"], {
         easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.enteringScreen
+        duration: theme.transitions.duration.enteringScreen,
       }),
       marginLeft: 50,
-      marginRight: 50
+      marginRight: 50,
     },
     contentShift: {
       marginLeft: 260,
       transition: theme.transitions.create(["width", "margin"], {
         easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.enteringScreen
-      })
+        duration: theme.transitions.duration.enteringScreen,
+      }),
     },
     componentFab: {
       position: "absolute",
       bottom: theme.spacing(17),
       right: theme.spacing(2),
-      minWidth: "20em"
+      minWidth: "20em",
     },
     pipelineOptions: {
       position: "absolute",
       bottom: theme.spacing(13),
-      right: theme.spacing(11)
+      right: theme.spacing(11),
     },
     loadFab: {
       position: "absolute",
       bottom: theme.spacing(6),
-      right: theme.spacing(26)
+      right: theme.spacing(26),
     },
     killFab: {
       position: "absolute",
       bottom: theme.spacing(6),
-      right: theme.spacing(14.5)
+      right: theme.spacing(14.5),
     },
     saveFab: {
       position: "absolute",
       bottom: theme.spacing(6),
       right: theme.spacing(2),
-      backgroundColor: "#81c784"
+      backgroundColor: "#81c784",
     },
     spinner: {
       textAlign: "center",
       position: "absolute",
       bottom: theme.spacing(25),
-      right: theme.spacing(11)
+      right: theme.spacing(11),
     },
     credits: {
       position: "absolute",
@@ -81,14 +81,14 @@ export default function WorkAreaView(props) {
       borderRadius: "5em",
       paddingLeft: "0.4em",
       paddingRight: "0.4em",
-      fontStyle: "italic"
+      fontStyle: "italic",
     },
     emptyWorkArea: {
-      minHeight: "80vh"
+      minHeight: "80vh",
     },
     thinText: {
-      fontFamily: "Roboto Thin"
-    }
+      fontFamily: "Roboto Thin",
+    },
   }));
 
   const classes = useStyles();
@@ -96,8 +96,13 @@ export default function WorkAreaView(props) {
   return (
     <div
       className={clsx(classes.content, {
-        [classes.contentShift]: props.isSideBarOpen
+        [classes.contentShift]: props.isSideBarOpen,
       })}
+      style={{
+        paddingBottom: "60px",
+        right: "-10px",
+        position: "absolute",
+      }}
     >
       <Snackbar
         open={props.showSuccessMessage}
@@ -162,6 +167,7 @@ export default function WorkAreaView(props) {
         <ComponentFormContainer
           createComponent={props.createComponent}
           toggleComponentForm={props.toggleComponentForm}
+          loadComponent={props.loadComponent}
         />
       )}
       {props.showPipelineForm && (
@@ -170,6 +176,7 @@ export default function WorkAreaView(props) {
           togglePipelineForm={props.togglePipelineForm}
         />
       )}
+
       <Fab
         disabled={props.components.length >= 6}
         onClick={() => props.toggleComponentForm(true)}
@@ -220,6 +227,7 @@ export default function WorkAreaView(props) {
         <Done />
         SAVE
       </Fab>
+
       {props.showSpinner && (
         <div className={classes.spinner}>
           <CircularProgress size="1.5rem" />

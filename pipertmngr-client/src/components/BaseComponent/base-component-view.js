@@ -7,7 +7,7 @@ import {
   Grid,
   CardContent,
   CardHeader,
-  Typography
+  Typography,
 } from "@material-ui/core";
 import { Delete } from "@material-ui/icons";
 import "./base-component-style.css";
@@ -17,50 +17,61 @@ import jsplumb from "jsplumb";
 const styles = () => ({
   gridItem: {
     marginBottom: "1.5em",
-    cursor: "initial"
+    cursor: "initial",
   },
   glow: {
     border: "2.5px solid rgb(86, 180, 239)",
     boxShadow:
-      "0px 1px 3px rgba(0, 0, 0, 0.05) inset, 0px 0px 8px rgba(82, 168, 236, 0.6)"
+      "0px 1px 3px rgba(0, 0, 0, 0.05) inset, 0px 0px 8px rgba(82, 168, 236, 0.6)",
   },
   closeButton: {
     cursor: "pointer",
     float: "right",
     width: "20px",
-    cursor: "pointer"
+    cursor: "pointer",
   },
   componentCard: {
     backgroundColor: "#b5b5b533",
-    cursor: "pointer"
+    cursor: "pointer",
   },
   emptyComponent: {
     textAlign: "center",
-    marginBottom: "2.5em"
+    marginBottom: "2.5em",
   },
   thinText: {
-    fontFamily: "Roboto Thin"
-  }
+    fontFamily: "Roboto Thin",
+  },
 });
 
 export class BaseComponentView extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {};
+    this.state = {
+      update: 0,
+    };
   }
 
   componentDidUpdate() {
+    setTimeout(() => {
+      this.onResize();
+      this.addArrows();
+    }, 400);
+  }
+
+  addArrows = () => {
     if (this.props.routineList) {
       this.jsPlumbInstance.reset();
       this.jsPlumbLib.reset();
       this.jsPlumbInstance.importDefaults({
         Connector: ["Straight"],
         Anchors: ["Right", "LeftMiddle"],
-        Overlays: [["Arrow", { location: 1 }]]
+        Overlays: [["Arrow", { location: 1 }]],
       });
 
       for (let index = 0; index < this.props.routineList.length; index++) {
+        this.onResize();
+
         let currRoutine = this.props.componentData.name + "_item_" + index;
         let nextRoutine =
           this.props.componentData.name + "_item_" + (index + 1);
@@ -68,7 +79,9 @@ export class BaseComponentView extends Component {
           this.props.nodeRefs[currRoutine] &&
           this.props.nodeRefs[nextRoutine]
         ) {
-          this.props.linkList.forEach(currLink => {
+          this.props.linkList.forEach((currLink) => {
+            this.onResize();
+
             if (
               currLink.source === currRoutine &&
               currLink.target === nextRoutine
@@ -84,22 +97,17 @@ export class BaseComponentView extends Component {
                     {
                       label: currLink.link,
                       location: [0.5],
-                      cssClass: "endpointSourceLabel"
-                    }
-                  ]
-                ]
+                      cssClass: "endpointSourceLabel",
+                    },
+                  ],
+                ],
               });
             }
           });
         }
       }
-
-      // TODO: Find a cleaner solution
-      setTimeout(() => {
-        this.onResize();
-      }, 200);
     }
-  }
+  };
 
   componentDidMount() {
     this.jsPlumbLib = jsplumb.jsPlumb;
@@ -124,12 +132,11 @@ export class BaseComponentView extends Component {
 
   render() {
     const { classes } = this.props;
-
     return (
       <Grid item className={classes.gridItem} xs={4}>
         <Card
           className={clsx({
-            [classes.glow]: this.props.isSelected
+            [classes.glow]: this.props.isSelected,
           })}
         >
           <CardHeader

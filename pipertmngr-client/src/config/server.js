@@ -7,6 +7,7 @@ export default {
     (process.env.REST_API_PORT ? process.env.REST_API_PORT : "3000"),
   ROUTE_IS_ALIVE: "/isAlive",
   ROUTE_GET_ROUTINES: "/routines",
+  ROUTE_GET_COMPONENT: "/component",
   ROUTE_GET_ROUTINE_PARAMS: "/routineParams",
   ROUTE_SAVE_PIPELINE: "/pipeline",
   ROUTE_KILL_PIPELINE: "/kill",
@@ -20,10 +21,10 @@ export default {
     QueueRead: "QueueIn",
     QueueSend: "QueueOut",
     RedisRead: "RedisIn",
-    RedisSend: "RedisOut"
+    RedisSend: "RedisOut",
   },
   RoutineTypes: {
     HasToBeFirst: 0,
-    HasToBeLast: 2
-  }
+    HasToBeLast: 2,
+  },
 };
