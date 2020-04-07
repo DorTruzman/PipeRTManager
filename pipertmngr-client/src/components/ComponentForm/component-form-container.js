@@ -6,13 +6,13 @@ export class ComponentFormContainer extends Component {
     super(props);
 
     this.state = {
-      componentName: ""
+      componentName: "",
     };
   }
 
-  setInputState = e => {
+  setInputState = (e) => {
     this.setState({
-      componentName: e.target.value
+      componentName: e.target.value,
     });
   };
 
@@ -32,6 +32,7 @@ export class ComponentFormContainer extends Component {
         toggleComponentForm={this.props.toggleComponentForm}
         createComponent={this.createComponent}
         setInputState={this.setInputState}
+        loadComponent={this.props.loadComponent}
       />
     );
   }

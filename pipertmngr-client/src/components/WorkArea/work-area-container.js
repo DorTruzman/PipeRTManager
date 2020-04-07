@@ -13,11 +13,26 @@ export class WorkAreaContainer extends Component {
       successMessage: "",
       showSuccessMessage: false,
       showPipelineForm: false,
-      showSpinner: false
+      showSpinner: false,
+      routineList: [],
+      routineTypes: [],
     };
   }
 
-  toggleSpinner = toggleState => {
+  async componentDidMount() {
+    await this.initRoutines();
+  }
+
+  initRoutines = async () => {
+    let routineList = await ServerUtils.getRoutines();
+    let routineTypes = {};
+    routineList.forEach((routine) => {
+      routineTypes[routine.name] = routine.type;
+    });
+    this.setState({ routineList: routineList, routineTypes: routineTypes });
+  };
+
+  toggleSpinner = (toggleState) => {
     let spinnerState = !this.state.showSpinner;
 
     if (toggleState === "ON") {
@@ -27,43 +42,49 @@ export class WorkAreaContainer extends Component {
     }
 
     this.setState({
-      showSpinner: spinnerState
+      showSpinner: spinnerState,
     });
   };
 
   togglePipelineForm = () => {
     this.setState({
-      showPipelineForm: !this.state.showPipelineForm
+      showPipelineForm: !this.state.showPipelineForm,
     });
   };
 
-  loadPipeline = async (buffer, isYaml) => {
-    let pipelineData;
-    let routineList = await ServerUtils.getRoutines();
-    let routineTypes = {};
+  createComponentJson = (component) => {
+    let retComponent = {
+      name: component.name,
+      routines:
+        component.routines &&
+        component.routines.map((routine) => {
+          let paramsObject = { ...routine };
+          delete paramsObject.routine_type_name;
 
-    routineList.forEach(routine => {
-      routineTypes[routine.name] = routine.type;
-    });
+          return {
+            routine_type_name: routine.routine_type_name,
+            routine_type: this.state.routineTypes[routine.routine_type_name],
+            params: { ...paramsObject },
+          };
+        }),
+    };
+
+    return retComponent;
+  };
+
+  loadComponent = (newComponent) => {
+    let pipelineData = this.props.components;
+    pipelineData.push(this.createComponentJson(newComponent));
+    this.props.setPipeline(pipelineData);
+  };
+
+  loadPipeline = (buffer, isYaml) => {
+    let pipelineData;
 
     if (isYaml) {
       pipelineData = jsYAML.load(buffer);
-      pipelineData = pipelineData.map(comp => {
-        return {
-          name: comp.name,
-          routines:
-            comp.routines &&
-            comp.routines.map(routine => {
-              let paramsObject = { ...routine };
-              delete paramsObject.routine_type_name;
-
-              return {
-                routine_type_name: routine.routine_type_name,
-                routine_type: routineTypes[routine.routine_type_name],
-                params: { ...paramsObject }
-              };
-            })
-        };
+      pipelineData = pipelineData.map((comp) => {
+        return this.createComponentJson(comp);
       });
     } else {
       pipelineData = JSON.parse(buffer);
@@ -97,7 +118,7 @@ export class WorkAreaContainer extends Component {
       userComponents.forEach((currentComponent, index) => {
         componentsToSend.push({
           name: currentComponent.name,
-          queues: []
+          queues: [],
         });
 
         if (
@@ -114,10 +135,10 @@ export class WorkAreaContainer extends Component {
             let currRoutine = currentComponent.routines[currRoutineIndex];
             componentsToSend[index].routines.push({
               routine_type_name: currRoutine.routine_type_name,
-              ...currRoutine.params
+              ...currRoutine.params,
             });
 
-            Object.keys(currRoutine.params).forEach(currParam => {
+            Object.keys(currRoutine.params).forEach((currParam) => {
               let parameterValue = currRoutine.params[currParam];
 
               if (
@@ -166,23 +187,23 @@ export class WorkAreaContainer extends Component {
       });
   };
 
-  toggleErrorMessage = errorMessage => {
+  toggleErrorMessage = (errorMessage) => {
     this.setState({
       errorMessage:
         typeof errorMessage === "string"
           ? errorMessage.toString()
           : this.state.errorMessage,
-      showErrorMessage: !this.state.showErrorMessage
+      showErrorMessage: !this.state.showErrorMessage,
     });
   };
 
-  toggleSuccessMessage = successMessage => {
+  toggleSuccessMessage = (successMessage) => {
     this.setState({
       successMessage:
         typeof successMessage === "string"
           ? successMessage.toString()
           : this.state.successMessage,
-      showSuccessMessage: !this.state.showSuccessMessage
+      showSuccessMessage: !this.state.showSuccessMessage,
     });
   };
 
@@ -210,6 +231,7 @@ export class WorkAreaContainer extends Component {
         successMessage={this.state.successMessage}
         errorMessage={this.state.errorMessage}
         showSpinner={this.state.showSpinner}
+        loadComponent={this.loadComponent}
       />
     );
   }
