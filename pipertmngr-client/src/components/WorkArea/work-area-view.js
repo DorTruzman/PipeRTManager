@@ -98,6 +98,11 @@ export default function WorkAreaView(props) {
       className={clsx(classes.content, {
         [classes.contentShift]: props.isSideBarOpen,
       })}
+      style={{
+        paddingBottom: "60px",
+        right: "-10px",
+        position: "absolute",
+      }}
     >
       <Snackbar
         open={props.showSuccessMessage}
@@ -171,6 +176,7 @@ export default function WorkAreaView(props) {
           togglePipelineForm={props.togglePipelineForm}
         />
       )}
+
       <Fab
         disabled={props.components.length >= 6}
         onClick={() => props.toggleComponentForm(true)}
@@ -221,6 +227,7 @@ export default function WorkAreaView(props) {
         <Done />
         SAVE
       </Fab>
+
       {props.showSpinner && (
         <div className={classes.spinner}>
           <CircularProgress size="1.5rem" />
