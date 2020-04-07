@@ -2,6 +2,16 @@
 
 All notable changes to the Pipeline Manager UI project will be documented in this file.
 
+## [0.3.0] - 2020-04-07
+
+### Changed
+
+- YAML structure to match the PipeRT standard
+
+### Fixed
+
+- A bug where the "Browse File" button was showed twice in the "Load-A-Pipeline" form
+
 ## [0.2.2] - 2020-04-06
 
 ### Changed
@@ -46,3 +56,4 @@ All notable changes to the Pipeline Manager UI project will be documented in thi
 	- Responsive routines & connections (queues)
 - Mock NodeJS server as a part of the docker-compose
 - Production ready docker-compose file, Dockerfiles (Prod. + Dev.) for the client and a Prod. Dockerfile for the mock server
+
