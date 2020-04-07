@@ -13,11 +13,11 @@ export class WorkAreaContainer extends Component {
       successMessage: "",
       showSuccessMessage: false,
       showPipelineForm: false,
-      showSpinner: false
+      showSpinner: false,
     };
   }
 
-  toggleSpinner = toggleState => {
+  toggleSpinner = (toggleState) => {
     let spinnerState = !this.state.showSpinner;
 
     if (toggleState === "ON") {
@@ -27,13 +27,13 @@ export class WorkAreaContainer extends Component {
     }
 
     this.setState({
-      showSpinner: spinnerState
+      showSpinner: spinnerState,
     });
   };
 
   togglePipelineForm = () => {
     this.setState({
-      showPipelineForm: !this.state.showPipelineForm
+      showPipelineForm: !this.state.showPipelineForm,
     });
   };
 
@@ -42,27 +42,33 @@ export class WorkAreaContainer extends Component {
     let routineList = await ServerUtils.getRoutines();
     let routineTypes = {};
 
-    routineList.forEach(routine => {
+    routineList.forEach((routine) => {
       routineTypes[routine.name] = routine.type;
     });
 
     if (isYaml) {
       pipelineData = jsYAML.load(buffer);
-      pipelineData = pipelineData.map(comp => {
+      pipelineData = pipelineData.components;
+      let componentsList = Object.keys(pipelineData);
+      pipelineData = componentsList.map((compKey) => {
+        let comp = pipelineData[compKey];
+        let routines = comp.routines && Object.keys(comp.routines);
+
         return {
-          name: comp.name,
+          name: compKey,
           routines:
-            comp.routines &&
-            comp.routines.map(routine => {
+            routines &&
+            routines.map((routineKey) => {
+              let routine = comp.routines[routineKey];
               let paramsObject = { ...routine };
               delete paramsObject.routine_type_name;
 
               return {
                 routine_type_name: routine.routine_type_name,
                 routine_type: routineTypes[routine.routine_type_name],
-                params: { ...paramsObject }
+                params: { name: routineKey, ...paramsObject },
               };
-            })
+            }),
         };
       });
     } else {
@@ -89,22 +95,23 @@ export class WorkAreaContainer extends Component {
   savePipeline = () => {
     this.toggleSpinner("ON");
     let userComponents = [...this.props.components];
-    let componentsToSend = [];
+    let componentsToSend = {};
 
     if (Array.isArray(userComponents) && userComponents.length > 0) {
       localStorage.setItem("lastPipeline", JSON.stringify(userComponents));
 
       userComponents.forEach((currentComponent, index) => {
-        componentsToSend.push({
-          name: currentComponent.name,
-          queues: []
-        });
+        componentsToSend[currentComponent.name] = {
+          queues: [],
+        };
+
+        let currrentComponentObject = componentsToSend[currentComponent.name];
 
         if (
           Array.isArray(currentComponent.routines) &&
           currentComponent.routines.length > 0
         ) {
-          componentsToSend[index].routines = [];
+          currrentComponentObject.routines = {};
 
           for (
             let currRoutineIndex = 0;
@@ -112,26 +119,33 @@ export class WorkAreaContainer extends Component {
             currRoutineIndex++
           ) {
             let currRoutine = currentComponent.routines[currRoutineIndex];
-            componentsToSend[index].routines.push({
-              routine_type_name: currRoutine.routine_type_name,
-              ...currRoutine.params
-            });
+            let currRoutineParams = { ...currRoutine.params };
+            delete currRoutineParams.name;
 
-            Object.keys(currRoutine.params).forEach(currParam => {
+            currrentComponentObject.routines[currRoutine.params.name] = {
+              routine_type_name: currRoutine.routine_type_name,
+              ...currRoutineParams,
+            };
+
+            Object.keys(currRoutine.params).forEach((currParam) => {
               let parameterValue = currRoutine.params[currParam];
 
               if (
-                !componentsToSend[index].queues.includes(parameterValue) &&
+                !currrentComponentObject.queues.includes(parameterValue) &&
                 (currParam === ServerConfig.QUEUE_READ ||
                   currParam === ServerConfig.QUEUE_SEND)
               ) {
-                componentsToSend[index].queues.push(parameterValue);
+                currrentComponentObject.queues.push(parameterValue);
               }
             });
           }
         }
       });
     }
+
+    componentsToSend = {
+      components: componentsToSend,
+    };
 
     ServerUtils.savePipeline(componentsToSend)
       .then(() => {
@@ -166,23 +180,23 @@ export class WorkAreaContainer extends Component {
       });
   };
 
-  toggleErrorMessage = errorMessage => {
+  toggleErrorMessage = (errorMessage) => {
     this.setState({
       errorMessage:
         typeof errorMessage === "string"
           ? errorMessage.toString()
           : this.state.errorMessage,
-      showErrorMessage: !this.state.showErrorMessage
+      showErrorMessage: !this.state.showErrorMessage,
     });
   };
 
-  toggleSuccessMessage = successMessage => {
+  toggleSuccessMessage = (successMessage) => {
     this.setState({
       successMessage:
         typeof successMessage === "string"
           ? successMessage.toString()
           : this.state.successMessage,
-      showSuccessMessage: !this.state.showSuccessMessage
+      showSuccessMessage: !this.state.showSuccessMessage,
     });
   };
 
