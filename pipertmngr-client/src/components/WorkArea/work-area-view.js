@@ -98,11 +98,6 @@ export default function WorkAreaView(props) {
       className={clsx(classes.content, {
         [classes.contentShift]: props.isSideBarOpen,
       })}
-      /*style={{
-        paddingBottom: "60px",
-        right: "-10px",
-        position: "absolute",
-      }}*/
     >
       <Snackbar
         open={props.showSuccessMessage}
@@ -240,6 +235,7 @@ export default function WorkAreaView(props) {
           </Typography>
         </div>
       )}
+
       <Typography className={classes.credits}>
         PipeRT © 2020&nbsp;
         <Link href="https://github.com/ItamarWilf/PipeRT">
