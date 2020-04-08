@@ -29,7 +29,7 @@ const ServerUtils = {
     );
     components = await components.json();
 
-    return components;
+    return components.components;
   },
   killPipeline: async () => {
     return fetch(ServerConfig.SERVER_URL + ServerConfig.ROUTE_KILL_PIPELINE, {

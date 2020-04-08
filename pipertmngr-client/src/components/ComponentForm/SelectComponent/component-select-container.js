@@ -5,7 +5,7 @@ import { TransferWithinAStationSharp } from "@material-ui/icons";
 export class ComponentSelectContainer extends Component {
   constructor(props) {
     super(props);
-    // notice - the component name is unique
+    // notice - the component name is a key
     this.state = {
       componentNameSelect: "",
       componentSelect: null,
@@ -15,18 +15,17 @@ export class ComponentSelectContainer extends Component {
   }
 
   async componentDidMount() {
-    var result = await ServerUtils.getComponent();
-    var resultNames = await result.map((elm) => elm.name);
+    var components = await ServerUtils.getComponent();
+    var componentsNames = Object.keys(components);
 
     this.setState({
-      componentNameList: resultNames,
-      componentList: result,
+      componentNameList: componentsNames,
+      componentList: components,
     });
   }
 
   selectComponent = (selected) => {
-    let comp = this.state.componentList.find((elem) => elem.name === selected);
-    this.setState({ componentSelect: comp });
+    this.setState({ componentSelect: this.state.componentList[selected] });
   };
 
   loadComponent = () => {

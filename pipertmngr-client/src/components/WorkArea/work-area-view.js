@@ -98,11 +98,11 @@ export default function WorkAreaView(props) {
       className={clsx(classes.content, {
         [classes.contentShift]: props.isSideBarOpen,
       })}
-      style={{
+      /*style={{
         paddingBottom: "60px",
         right: "-10px",
         position: "absolute",
-      }}
+      }}*/
     >
       <Snackbar
         open={props.showSuccessMessage}

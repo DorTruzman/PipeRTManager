@@ -45,8 +45,8 @@ router.post("/pipeline", function (req, res) {
 });
 
 router.get("/component", (req, res) => {
-  const components = [
-    {
+  // const components = [
+  /* {
       name: "Stream",
       queues: "video",
       routines: [
@@ -88,9 +88,58 @@ router.get("/component", (req, res) => {
         },
       ],
     },
-  ];
+    {*/
+  let x = {
+    components: {
+      VideoCapture: {
+        queues: ["from_camera"],
+        routines: {
+          listen_to_camera: {
+            routine_type_name: "ListenToStream",
+            url: "http://www.camera.com",
+            fps: 24,
+            out_queue: "from_camera",
+          },
+          frames_to_redis: {
+            routine_type_name: "MessageToRedis",
+            url: "/bla/bla",
+            max_stream_length: 40,
+            message_queue: "from_camera",
+            redis_send_key: "redis_out",
+          },
+        },
+      },
+      Detection: {
+        queues: ["data_out", "stuff_out", "stuff_2_out"],
+        routines: {
+          get_from_redis: {
+            routine_type_name: "MessageFromRedis",
+            redis_read_key: "redis_out",
+            out_queue: "data_out",
+          },
+          do_some_stuff: {
+            routine_type_name: "DoMoreStuff",
+            message_queue: "data_out",
+            out_queue: "stuff_out",
+          },
+          do_stuff_2: {
+            routine_type_name: "DoStuff",
+            message_queue: "stuff_out",
+            out_queue: "stuff_2_out",
+          },
+          redis_out_final: {
+            routine_type_name: "MessageToRedis",
+            url: "/bla/bla",
+            max_stream_length: 30,
+            message_queue: "stuff_2_out",
+            redis_send_key: "redis_out_2",
+          },
+        },
+      },
+    },
+  };
 
-  res.status(200).json(components);
+  res.status(200).json(x);
 });
 
 router.put("/kill", function (req, res) {

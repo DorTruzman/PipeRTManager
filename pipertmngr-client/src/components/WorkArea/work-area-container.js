@@ -74,7 +74,8 @@ export class WorkAreaContainer extends Component {
 
   loadComponent = (newComponent) => {
     let pipelineData = this.props.components;
-    pipelineData.push(this.createComponentJson(newComponent));
+    let compName = Object.keys(newComponent)[0];
+    pipelineData.push(this.createComponentJson(compName, newComponent));
     this.props.setPipeline(pipelineData);
   };
 
@@ -83,14 +84,38 @@ export class WorkAreaContainer extends Component {
 
     if (isYaml) {
       pipelineData = jsYAML.load(buffer);
-      pipelineData = pipelineData.map((comp) => {
-        return this.createComponentJson(comp);
+      pipelineData = pipelineData.components;
+      let componentsList = Object.keys(pipelineData);
+      pipelineData = componentsList.map((comp) => {
+        return this.createComponentJson(comp, pipelineData[comp]);
       });
     } else {
       pipelineData = JSON.parse(buffer);
     }
 
     this.props.setPipeline(pipelineData);
+  };
+
+  createComponentJson = (compKey, pipelineDataCompKey) => {
+    let comp = pipelineDataCompKey;
+    let routines = comp.routines && Object.keys(comp.routines);
+
+    return {
+      name: compKey,
+      routines:
+        routines &&
+        routines.map((routineKey) => {
+          let routine = comp.routines[routineKey];
+          let paramsObject = { ...routine };
+          delete paramsObject.routine_type_name;
+
+          return {
+            routine_type_name: routine.routine_type_name,
+            routine_type: this.state.routineTypes[routine.routine_type_name],
+            params: { name: routineKey, ...paramsObject },
+          };
+        }),
+    };
   };
 
   killPipeline = () => {
@@ -110,22 +135,23 @@ export class WorkAreaContainer extends Component {
   savePipeline = () => {
     this.toggleSpinner("ON");
     let userComponents = [...this.props.components];
-    let componentsToSend = [];
+    let componentsToSend = {};
 
     if (Array.isArray(userComponents) && userComponents.length > 0) {
       localStorage.setItem("lastPipeline", JSON.stringify(userComponents));
 
       userComponents.forEach((currentComponent, index) => {
-        componentsToSend.push({
-          name: currentComponent.name,
+        componentsToSend[currentComponent.name] = {
           queues: [],
-        });
+        };
+
+        let currrentComponentObject = componentsToSend[currentComponent.name];
 
         if (
           Array.isArray(currentComponent.routines) &&
           currentComponent.routines.length > 0
         ) {
-          componentsToSend[index].routines = [];
+          currrentComponentObject.routines = {};
 
           for (
             let currRoutineIndex = 0;
@@ -133,26 +159,33 @@ export class WorkAreaContainer extends Component {
             currRoutineIndex++
           ) {
             let currRoutine = currentComponent.routines[currRoutineIndex];
-            componentsToSend[index].routines.push({
+            let currRoutineParams = { ...currRoutine.params };
+            delete currRoutineParams.name;
+
+            currrentComponentObject.routines[currRoutine.params.name] = {
               routine_type_name: currRoutine.routine_type_name,
-              ...currRoutine.params,
-            });
+              ...currRoutineParams,
+            };
 
             Object.keys(currRoutine.params).forEach((currParam) => {
               let parameterValue = currRoutine.params[currParam];
 
               if (
-                !componentsToSend[index].queues.includes(parameterValue) &&
+                !currrentComponentObject.queues.includes(parameterValue) &&
                 (currParam === ServerConfig.QUEUE_READ ||
                   currParam === ServerConfig.QUEUE_SEND)
               ) {
-                componentsToSend[index].queues.push(parameterValue);
+                currrentComponentObject.queues.push(parameterValue);
               }
             });
           }
         }
       });
     }
+
+    componentsToSend = {
+      components: componentsToSend,
+    };
 
     ServerUtils.savePipeline(componentsToSend)
       .then(() => {
